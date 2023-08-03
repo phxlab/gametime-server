@@ -1,0 +1,14 @@
+{
+  "name": "gametime-server",
+  "version": "0.0.1",
+  "description": "Server for GameTime",
+  "main": "server.js",
+  "type": "module",
+  "repository": "https://git.jetbrains.space/phxlab/gametime/gametime-server.git",
+  "author": "Nico Plyley <nico@phoenixtechlab.com>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
