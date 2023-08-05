@@ -1,0 +1,30 @@
+{
+  "name": "Panthers",
+  "slug": "panthers",
+  "waves": [
+    { "open": "2023-08-01", "close": "2023-08-07" },
+    { "open": "2023-08-15", "close": "2023-08-20" }
+  ],
+  "color": "blue",
+  "items": [
+    {
+      "name": "Panthers Jersey",
+      "sizes": [
+        { "size": "S", "additionalPrice": 0 },
+        { "size": "M", "additionalPrice": 2 },
+        { "size": "L", "additionalPrice": 4 },
+        { "size": "XL", "additionalPrice": 6 }
+      ],
+      "price": 25.99,
+      "images": [
+        { "url": "https://example.com/panthers_jersey.jpg" }
+      ],
+      "customizations": [
+        { "title": "Player Name", "price": 5 },
+        { "title": "Number", "price": 3 }
+      ],
+      "sizeChart": "https://example.com/panthers_size_chart.jpg",
+      "category": "614f4c7aebd6b9e9d6aa4567"
+    }
+  ]
+}
