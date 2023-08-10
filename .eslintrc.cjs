@@ -2,6 +2,7 @@ module.exports = {
   env: {
     es2021: true,
     node: true,
+    jest: true,
   },
   extends: 'airbnb-base',
   overrides: [
@@ -21,9 +22,11 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
+  plugins: ['jest'],
   rules: {
     'no-console': 'off',
     'import/extensions': 'off',
-    'consistent-return': 'off'
+    'consistent-return': 'off',
+   'import/no-extraneous-dependencies': ['error', {'devDependencies': true}],
   },
 };
