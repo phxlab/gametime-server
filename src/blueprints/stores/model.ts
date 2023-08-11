@@ -12,7 +12,7 @@ const storeSchema = new mongoose.Schema({
     minlength: 4,
     maxlength: 25,
     validate: {
-      validator(value) {
+      validator(value: string) {
         return /^[a-z0-9-]+$/.test(value);
       },
       message: 'Store slug must be url-friendly alphanumeric lowercase with dashes.',

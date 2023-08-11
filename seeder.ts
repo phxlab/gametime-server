@@ -6,9 +6,9 @@ import colors from 'colors';
 dotenv.config();
 colors.enable();
 
-import Store from './src/blueprints/stores/model.js'
-// import Item from './src/blueprints/items/model.js'
-// import Category from './src/blueprints/categories/model.js';
+import Store from './src/blueprints/stores/model'
+// import Item from './src/blueprints/items/model.ts'
+// import Category from './src/blueprints/categories/model.ts';
 
 
 const stores = JSON.parse(fs.readFileSync('./__data__/stores.json', 'utf-8'));
@@ -17,12 +17,12 @@ const stores = JSON.parse(fs.readFileSync('./__data__/stores.json', 'utf-8'));
 
 export const importData = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    await mongoose.connect(process.env.MONGO_URI as string);
     await Store.create(stores);
     console.log('Database seeded'.green);
     await mongoose.connection.close();
   } catch (err) {
-    console.error(err.red);
+    console.error(`${(err as Error)}`.red);
   }
 };
 
@@ -32,7 +32,7 @@ const deleteData = async () => {
     console.log('Database removed'.red);
     process.exit(1)
   } catch (err) {
-    console.error(err.red);
+    console.error(`${(err as Error)}`.red);
   }
 };
 

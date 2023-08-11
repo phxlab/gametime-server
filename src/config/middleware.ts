@@ -1,7 +1,7 @@
-import express from 'express';
+import express, {Express} from 'express';
 import helmet from 'helmet';
 
-const setupMiddleware = (app) => {
+const setupMiddleware = (app: Express) => {
   app.use(express.json());
   app.use(helmet());
 };

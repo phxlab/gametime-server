@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 beforeAll(async () => {
   mongoose.set('strictQuery', false);
   // put your client connection code here, example with mongoose:
-  await mongoose.connect(process.env.MONGO_URI);
+  await mongoose.connect(process.env.MONGO_URI as string);
 });
 
 afterAll(async () => {
