@@ -18,10 +18,10 @@ export const getStores = asyncHandler(async (_req, res) => {
 // @route  GET /stores/:id
 // @access Public
 export const getStoreById = asyncHandler(async (req, res, next) => {
-  const store = await Store.findById(req.params.id);
+  let store = await Store.findOne({ slug: req.params.id });
 
   if (!store) {
-    // store = await Store.findById(req.params.id);
+    store = await Store.findById(req.params.id);
 
     if (!store) {
       return next(new ErrorResponse('No store found', 404));
