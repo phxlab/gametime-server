@@ -22,7 +22,7 @@ export const importData = async () => {
     console.log('Database seeded'.green);
     await mongoose.connection.close();
   } catch (err) {
-    console.error(`${(err as Error)}`.red);
+    console.error(`${err}`.red);
   }
 };
 
