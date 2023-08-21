@@ -6,10 +6,9 @@ import colors from 'colors';
 dotenv.config();
 colors.enable();
 
-import Store from './src/blueprints/stores/model'
+import Store from './src/blueprints/stores/model';
 // import Item from './src/blueprints/items/model.ts'
 // import Category from './src/blueprints/categories/model.ts';
-
 
 const stores = JSON.parse(fs.readFileSync('./__data__/stores.json', 'utf-8'));
 // const items = JSON.parse(fs.readFileSync(`${__dirname}/__data__/items.json`, 'utf-8'));
@@ -27,13 +26,13 @@ export const importData = async () => {
 };
 
 const deleteData = async () => {
-    console.log('running delete')
+  console.log('running delete');
   try {
     await Store.deleteMany();
     console.log('Database removed'.red);
     await mongoose.connection.close();
   } catch (err) {
-    console.error(`${(err as Error)}`.red);
+    console.error(`${err as Error}`.red);
   }
 };
 

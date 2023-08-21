@@ -1,7 +1,7 @@
-import mongoServer from './mogoServer'
+import mongoServer from './mogoServer';
 
 const tearDown = async () => {
-    await mongoServer.stop();
+  await mongoServer.stop();
 };
 
 export default tearDown;

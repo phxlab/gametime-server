@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import Wave from '../waves/model'
+import Wave from '../waves/model';
 
 interface StoreDocument extends Document {
   name: string;
@@ -27,15 +27,10 @@ const storeSchema = new Schema<StoreDocument>({
       validator(value: string) {
         return /^[a-z0-9-]+$/.test(value);
       },
-      message: 'Store slug must be url-friendly alphanumeric lowercase with dashes.',
+      message:
+        'Store slug must be url-friendly alphanumeric lowercase with dashes.',
     },
   },
-  // waves: [
-  //   {
-  //     type: Schema.Types.ObjectId,
-  //     ref: 'Wave',
-  //   },
-  // ],
   color: {
     type: String,
     required: [true, 'Store color is required.'],
@@ -49,13 +44,11 @@ storeSchema.virtual('waves', {
 });
 
 storeSchema.pre('save', async function () {
-
   if (this.isNew) {
     const waveData = this.waves.map((wave) => ({
       store: this._id,
       open: wave.open,
       close: wave.close,
-
     }));
 
     await Wave.insertMany(waveData);
@@ -63,7 +56,7 @@ storeSchema.pre('save', async function () {
 });
 
 storeSchema.methods.getOpenWaves = async function () {
-  return Wave.find({isClosed: false, store: this._id});
+  return Wave.find({ isClosed: false, store: this._id });
 };
 
 const Store = mongoose.model<StoreDocument>('Store', storeSchema);

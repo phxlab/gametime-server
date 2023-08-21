@@ -7,7 +7,9 @@ import dbConnect from './config/db';
 dotenv.config();
 colors.enable();
 
-const PORT: number = process.env.NODE_PORT ? parseInt(process.env.NODE_PORT, 10) : 3000;
+const PORT: number = process.env.NODE_PORT
+  ? parseInt(process.env.NODE_PORT, 10)
+  : 3000;
 
 dbConnect()
   .then(() => {

@@ -13,16 +13,9 @@ describe('List all stores with', () => {
 });
 
 describe('List store with', () => {
-  const invalidStores: string[] = [
-      'test',
-      '123',
-      '614f4c2eebd6b9e9d6aa4560'
-  ];
+  const invalidStores: string[] = ['test', '123', '614f4c2eebd6b9e9d6aa4560'];
 
-  const validStores: string[] = [
-      'wildcats',
-      '614f4c2eebd6b9e9d6aa4561'
-  ]
+  const validStores: string[] = ['wildcats', '614f4c2eebd6b9e9d6aa4561'];
 
   test.each(invalidStores)('Invalid slug or id - 404', async (storeId) => {
     const res = await request.get(`/stores/${storeId}`);
@@ -32,16 +25,16 @@ describe('List store with', () => {
   });
 
   test('Closed store', async () => {
-      const res = await request.get('/stores/panthers');
+    const res = await request.get('/stores/panthers');
 
-      expect(res.statusCode).toBe(403);
-      expect(res.body.success).toBeFalsy();
+    expect(res.statusCode).toBe(403);
+    expect(res.body.success).toBeFalsy();
   });
 
   test.each(validStores)('Valid slug or id', async (storeId) => {
-      const res = await request.get(`/stores/${storeId}`);
+    const res = await request.get(`/stores/${storeId}`);
 
-      expect(res.statusCode).toBe(200);
-      expect(res.body.success).toBeTruthy();
-  })
-})
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
+});

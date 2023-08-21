@@ -11,11 +11,10 @@ Backend server for handling the creations of stores for schools / companies to s
 - Login
 - Forgot Password
 
-
 # Stores
 
 - Create store
   - Create waves for a store
   - Create category
     - Create items
-- 
+-

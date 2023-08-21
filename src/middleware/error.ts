@@ -1,4 +1,4 @@
-import {Request, Response, NextFunction} from "express";
+import { Request, Response, NextFunction } from 'express';
 import ErrorResponse from '../utils/errorResponse';
 
 interface ErrorHandler extends Error {
@@ -8,9 +8,14 @@ interface ErrorHandler extends Error {
   errors?: { [key: string]: { message: string } } | undefined;
 }
 
-const errorHandler = (err: ErrorHandler, req: Request, res: Response, next: NextFunction) => {
+const errorHandler = (
+  err: ErrorHandler,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   if (res.headersSent) {
-    return next(err)
+    return next(err);
   }
 
   let error = { ...err };
@@ -36,7 +41,9 @@ const errorHandler = (err: ErrorHandler, req: Request, res: Response, next: Next
 
   // Mongoose validation error
   if (err.name === 'ValidationError' && err.errors !== undefined) {
-    const message = Object.values(err.errors).map((val) => val.message).join(', ');
+    const message = Object.values(err.errors)
+      .map((val) => val.message)
+      .join(', ');
     error = new ErrorResponse(message, 400);
   }
 

@@ -16,9 +16,7 @@
         { "size": "XL", "additionalPrice": 6 }
       ],
       "price": 25.99,
-      "images": [
-        { "url": "https://example.com/panthers_jersey.jpg" }
-      ],
+      "images": [{ "url": "https://example.com/panthers_jersey.jpg" }],
       "customizations": [
         { "title": "Player Name", "price": 5 },
         { "title": "Number", "price": 3 }

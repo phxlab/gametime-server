@@ -5,24 +5,30 @@ const itemSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Item name is required.'],
   },
-  sizes: [{
-    size: String,
-    additionalPrice: Number,
-  }],
+  sizes: [
+    {
+      size: String,
+      additionalPrice: Number,
+    },
+  ],
   price: {
     type: Number,
     required: [true, 'Item price is required.'],
   },
-  images: [{
-    url: {
-      type: String,
-      required: [true, 'Image URL is required.'],
+  images: [
+    {
+      url: {
+        type: String,
+        required: [true, 'Image URL is required.'],
+      },
     },
-  }],
-  customizations: [{
-    title: String,
-    price: Number,
-  }],
+  ],
+  customizations: [
+    {
+      title: String,
+      price: Number,
+    },
+  ],
   sizeChart: {
     type: String,
   },

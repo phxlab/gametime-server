@@ -1,4 +1,4 @@
-import express, {Express} from 'express';
+import express, { Express } from 'express';
 import helmet from 'helmet';
 
 const setupMiddleware = (app: Express) => {
