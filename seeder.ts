@@ -27,10 +27,11 @@ export const importData = async () => {
 };
 
 const deleteData = async () => {
+    console.log('running delete')
   try {
     await Store.deleteMany();
     console.log('Database removed'.red);
-    process.exit(1)
+    await mongoose.connection.close();
   } catch (err) {
     console.error(`${(err as Error)}`.red);
   }
