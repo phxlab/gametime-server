@@ -51,7 +51,6 @@ storeSchema.virtual('waves', {
 storeSchema.pre('save', async function () {
 
   if (this.isNew) {
-    console.log(this.waves)
     const waveData = this.waves.map((wave) => ({
       store: this._id,
       open: wave.open,

@@ -40,7 +40,6 @@ const storeOpenMiddleware = asyncHandler(async (req: Request, res: Response, nex
     }
 
     const waves = await store.getOpenWaves();
-    console.log(waves)
 
     // Check if the store is currently open
     const isCurrentlyOpen = isStoreOpen(waves);
