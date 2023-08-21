@@ -31,6 +31,13 @@ describe('List store with', () => {
     expect(res.body.success).toBeFalsy();
   });
 
+  test('Closed store', async () => {
+      const res = await request.get('/stores/panthers');
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.success).toBeFalsy();
+  });
+
   test.each(validStores)('Valid slug or id', async (storeId) => {
       const res = await request.get(`/stores/${storeId}`);
 
