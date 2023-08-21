@@ -7,6 +7,7 @@ module.exports = {
   extends: [
     'plugin:@typescript-eslint/recommended', // Add TypeScript recommended rules
     'plugin:jest/recommended', // Add Jest recommended rules
+    'prettier',
   ],
   overrides: [
     {
@@ -31,9 +32,6 @@ module.exports = {
     'no-console': 'off',
     'import/extensions': 'off',
     'consistent-return': 'off',
-    'import/no-extraneous-dependencies': [
-      'error',
-      { devDependencies: true },
-    ],
+    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
   },
 };
