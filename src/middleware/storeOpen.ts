@@ -1,4 +1,3 @@
-import { Request, Response, NextFunction } from 'express';
 import { DateTime } from 'luxon';
 import Store from '../blueprints/stores/model';
 import asyncHandler from 'express-async-handler';
@@ -35,33 +34,33 @@ const isStoreOpen = (waves: { open: string; close: string }[]) => {
   return false; // Store is closed
 };
 
-const storeOpenMiddleware = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const storeId = req.params.storeId;
+const storeOpenMiddleware = asyncHandler(async (req, res, next) => {
+  const storeId = req.params.storeId;
 
-    let store = await Store.findOne({ slug: storeId });
+  let store = await Store.findOne({ slug: storeId });
+
+  if (!store) {
+    store = await Store.findById(storeId);
 
     if (!store) {
-      store = await Store.findById(storeId);
-
-      if (!store) {
-        return next(new ErrorResponse('No store found', 404));
-      }
+      return next(new ErrorResponse('No store found', 404));
     }
+  }
 
-    const waves = await store.getOpenWaves();
+  req.store = store;
 
-    // Check if the store is currently open
-    const isCurrentlyOpen = isStoreOpen(waves);
+  const waves = await store.getOpenWaves();
 
-    if (!isCurrentlyOpen) {
-      // Handle case where store is closed
-      return next(new ErrorResponse('Store not open', 403));
-    } else {
-      // Store is open, continue to the next middleware
-      next();
-    }
-  },
-);
+  // Check if the store is currently open
+  const isCurrentlyOpen = isStoreOpen(waves);
+
+  if (!isCurrentlyOpen) {
+    // Handle case where store is closed
+    return next(new ErrorResponse('Store not open', 403));
+  } else {
+    // Store is open, continue to the next middleware
+    next();
+  }
+});
 
 export default storeOpenMiddleware;
