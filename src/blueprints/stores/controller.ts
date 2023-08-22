@@ -1,9 +1,9 @@
 import asyncHandler from 'express-async-handler';
 import Store from './model';
 
-// @desc   Get all stores
+// ?desc   Get all stores
 // @route  GET /stores
-// @access Private
+// !access Private
 export const getStores = asyncHandler(async (_req, res) => {
   const stores = await Store.find();
 
@@ -13,9 +13,9 @@ export const getStores = asyncHandler(async (_req, res) => {
   });
 });
 
-// @desc   Get store by id
+// ?desc   Get store by id
 // @route  GET /stores/:storeId
-// @access Public
+// *access Public
 export const getStoreById = asyncHandler(async (req, res) => {
   const store = await Store.findOne({ slug: req.params.storeId });
 
