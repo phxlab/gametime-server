@@ -1,10 +1,10 @@
 import { Schema, model } from 'mongoose';
-interface CompanyDocument {
+interface OrgModel {
   name: string;
   slug: string;
 }
 
-const companyModel = new Schema<CompanyDocument>({
+const orgModel = new Schema<OrgModel>({
   name: {
     type: String,
     required: [true, 'Name is required'],
@@ -16,4 +16,4 @@ const companyModel = new Schema<CompanyDocument>({
   },
 });
 
-export default model<CompanyDocument>('Company', companyModel);
+export default model('Org', orgModel);
