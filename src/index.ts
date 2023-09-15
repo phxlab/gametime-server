@@ -1,7 +1,19 @@
-import { Hono } from 'hono'
+import { Hono } from 'hono';
+import { logger } from 'hono/logger';
+import dbConnect from './config/db';
 
-const app = new Hono()
+(async () => {
+  await dbConnect();
+})();
 
-app.get('/', (c) => c.text('Hello Hono!'))
+const app = new Hono();
 
-export default app
+app.use('*', logger());
+app.get('/', (c) =>
+  c.json({
+    name: 'GameTime Server',
+    version: '0.0.1',
+  }),
+);
+
+export default app;
