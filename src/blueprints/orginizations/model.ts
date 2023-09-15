@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-interface OrgModelDocument {
+export interface OrgModelDocument {
   name: string;
   slug: string;
 }
