@@ -27,6 +27,4 @@ const waveSchema = new Schema<Wave>({
   },
 });
 
-const WaveModel = mongoose.model<Wave>('Wave', waveSchema);
-
-export default WaveModel;
+export default mongoose.model('Wave', waveSchema);

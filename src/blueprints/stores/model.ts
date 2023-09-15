@@ -59,6 +59,4 @@ storeSchema.methods.getOpenWaves = async function () {
   return Wave.find({ isClosed: false, store: this._id });
 };
 
-const Store = mongoose.model<StoreDocument>('Store', storeSchema);
-
-export default Store;
+export default mongoose.model('Store', storeSchema);
