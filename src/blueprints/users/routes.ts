@@ -9,7 +9,12 @@ const auth = new Hono();
 auth.post('/', async (c) => {
   const { name, email, password, username } = await c.req.json();
 
-  const data = await User.create({ name, email, password, username });
+  const data = await User.create({
+    name,
+    email: email.toLowerCase(),
+    password,
+    username: username.toLowerCase(),
+  });
 
   const { password: pass, ...responseData } = data.toObject();
 
@@ -78,8 +83,8 @@ auth.put('/:id', async (c) => {
   }
 
   user.name = data.name || user.email;
-  user.email = data.email || user.email;
-  user.username = data.username || user.username;
+  user.email = data.email.toLowerCase() || user.email;
+  user.username = data.username.toLowerCase() || user.username;
 
   if (data.password) {
     user.password = data.password;
