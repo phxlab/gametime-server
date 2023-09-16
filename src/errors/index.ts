@@ -1,8 +1,5 @@
 import { Context } from 'hono';
-import mongooseErrorHandler from './mongoose'; // Import your mongoose-specific error handler
-import honoErrorHandler from './hono';
-import { type } from 'os';
-import { parseBody } from 'hono/dist/types/utils/body'; // Import your hono-specific error handler
+import mongooseErrorHandler from './mongoose';
 
 export interface Error {
   message: string;
@@ -10,7 +7,7 @@ export interface Error {
   statusCode?: number;
 }
 
-const errorHandlers = [mongooseErrorHandler, honoErrorHandler];
+const errorHandlers = [mongooseErrorHandler];
 
 const errorHandler = async (error: any, c: Context) => {
   let err: Error | null = {
