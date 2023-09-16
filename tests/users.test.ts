@@ -1,9 +1,37 @@
-import { expect, test, describe } from 'bun:test';
+import { expect, test, describe, beforeAll } from 'bun:test';
 import r from 'supertest';
+import mongoose from 'mongoose';
+import User from '../src/blueprints/users/model';
 
 const request = r('http://server:3000');
 
 let userId: string;
+
+const testUser: { [key: string]: string } = {
+  name: 'Test User',
+  email: 'test@gmail.com',
+  password: 'password',
+  username: 'test',
+};
+
+beforeAll(async () => {
+  const options = {
+    maxPoolSize: 10,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    dbName: 'gametime',
+  };
+
+  await mongoose.connect('mongodb://root:password@mongodb/', options);
+  await User.deleteMany();
+
+  await User.create({
+    name: 'John Doe',
+    email: 'jdoe@gmail.com',
+    username: 'john',
+    password: 'password',
+  });
+});
 
 describe('Create user', () => {
   test('with no data sent - 400', async () => {
@@ -13,31 +41,57 @@ describe('Create user', () => {
     expect(res.body.sucess).toBeFalsy();
   });
 
-  test('with some data sent - 400', async () => {
-    const res = await request.post('/users').send({ name: 'Test User' });
+  // @ts-ignore
+  test.each(['name', 'email', 'username', 'password'])(
+    'with partial data - 400',
+    async (field: string) => {
+      const { [field]: x, ...rest } = testUser;
 
-    expect(res.status).toBe(400);
-    expect(res.body.sucess).toBeFalsy();
+      const res = await request.post('/users').send(rest);
+
+      expect(res.status).toBe(400);
+      expect(res.body.sucess).toBeFalsy();
+    },
+  );
+
+  test('with existing email - 409', async () => {
+    const res = await request.post('/users').send({
+      name: 'Test User',
+      email: 'jdoe@gmail.com',
+      username: 'test',
+      password: 'password',
+    });
+
+    expect(res.status).toBe(409);
+    expect(res.body.success).toBeFalsy();
   });
 
-  test('with success - 201', async () => {
+  test('with existing username - 409', async () => {
     const res = await request.post('/users').send({
       name: 'Test User',
       email: 'test@gmail.com',
+      username: 'john',
       password: 'password',
-      username: 'test',
     });
+
+    expect(res.status).toBe(409);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with success - 201', async () => {
+    const res = await request.post('/users').send(testUser);
+
+    userId = res.body.data._id;
 
     expect(res.status).toBe(201);
     expect(res.body.success).toBeTruthy();
+    expect(res.body.data.password).toBeUndefined();
   });
 });
 
 describe('Get all users', () => {
   test('with success - 200', async () => {
     const res = await request.get('/users');
-
-    userId = res.body.data[0]._id;
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBeTruthy();
@@ -82,13 +136,35 @@ describe('Update user', () => {
     expect(res.body.success).toBeFalsy();
   });
 
+  test('with existing email - 409', async () => {
+    const res = await request
+      .put(`/users/${userId}`)
+      .send({ email: 'jdoe@gmail.com' });
+
+    expect(res.status).toBe(409);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with existing username - 409', async () => {
+    const res = await request
+      .put(`/users/${userId}`)
+      .send({ username: 'john' });
+
+    expect(res.status).toBe(409);
+    expect(res.body.success).toBeFalsy();
+  });
+
   test('with success - 200', async () => {
     const res = await request
       .put(`/users/${userId}`)
-      .send({ name: 'John Doe' });
+      .send({ name: 'Test Updated', password: 'password' });
+
+    const user = await User.findById(userId).select('+password');
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBeTruthy();
+    expect(res.body.password).toBeUndefined();
+    expect(user?.password !== 'password').toBeTruthy();
   });
 });
 
