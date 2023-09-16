@@ -36,7 +36,7 @@ const UserSchema = new Schema<UserDocument>({
   password: {
     type: String,
     required: [true, 'Password is required.'],
-    minLength: 6,
+    minLength: [6, 'Password must be at least 6 characters'],
     select: false,
   },
   resetPasswordToken: String,
@@ -50,12 +50,11 @@ const UserSchema = new Schema<UserDocument>({
 
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
-    return next();
+    next();
   }
 
   const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password as string, salt);
-  return next();
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 export default model('User', UserSchema);
