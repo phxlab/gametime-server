@@ -1,10 +1,18 @@
-import mongoose from 'mongoose';
+import mongoose, { mongo } from 'mongoose';
 
 const dbConnect = async () => {
-  const MONGO_URI = Bun.env.MONGO_URI as string;
+  let MONGO_URI = Bun.env.MONGO_URI as string;
+
+  const options = {
+    maxPoolSize: 10,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    dbName: 'gametime',
+  };
 
   try {
-    await mongoose.connect(MONGO_URI);
+    await mongoose.connect(MONGO_URI, options);
+
     console.log(`MongoDB Connected...`);
   } catch (err) {
     console.error(err);
