@@ -2,7 +2,7 @@ FROM oven/bun:latest
 
 WORKDIR /app
 
-RUN bun install supertest mongoose
+RUN bun install
 
 COPY . .
 
