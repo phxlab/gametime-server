@@ -1,6 +1,5 @@
 import { Hono } from 'hono';
 import User from './model';
-import { findOr404 } from './users';
 
 const auth = new Hono();
 
@@ -44,24 +43,54 @@ auth.get('/', async (c) => {
 auth.get('/:id', async (c) => {
   const user = await User.findById(c.req.param('id'));
 
-  return findOr404(user, c);
+  if (!user) {
+    return c.json(
+      {
+        success: false,
+        message: 'User not found',
+      },
+      404,
+    );
+  }
+
+  return c.json(
+    {
+      success: true,
+      data: user,
+    },
+    200,
+  );
 });
 
 // @desc    Update user by id
 // *route   PUT /users/:id
 // !method  Private
 auth.put('/:id', async (c) => {
-  const { name, email, password, username } = await c.req.json();
-  const user = await User.findByIdAndUpdate(
-    c.req.param('id'),
-    { name, email, password, username },
-    {
-      new: true,
-      runValidators: true,
-    },
-  );
+  const data = await c.req.json();
 
-  return findOr404(user, c);
+  const user = await User.findById(c.req.param('id'));
+
+  if (!user) {
+    return c.json({
+      success: false,
+      message: 'User not found',
+    });
+  }
+
+  user.name = data.name || user.email;
+  user.email = data.email || user.email;
+  user.username = data.username || user.username;
+
+  if (data.password) {
+    user.password = data.password;
+  }
+
+  await user.save();
+
+  return c.json({
+    success: true,
+    data: user,
+  });
 });
 
 // @desc    Delete user by id
@@ -70,6 +99,23 @@ auth.put('/:id', async (c) => {
 auth.delete('/:id', async (c) => {
   const user = await User.findByIdAndDelete(c.req.param('id'));
 
-  return findOr404(user, c);
+  if (!user) {
+    return c.json(
+      {
+        success: false,
+        message: 'User not found',
+      },
+      404,
+    );
+  }
+
+  return c.json(
+    {
+      success: true,
+      data: user,
+    },
+    200,
+  );
 });
+
 export default auth;
