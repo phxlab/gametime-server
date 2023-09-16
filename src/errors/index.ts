@@ -27,6 +27,10 @@ const errorHandler = async (error: any, c: Context) => {
     }
   }
 
+  if (err.message && !err.statusCode) {
+    err.statusCode = 400;
+  }
+
   return c.json(
     {
       success: false,
