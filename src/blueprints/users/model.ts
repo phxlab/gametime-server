@@ -1,5 +1,7 @@
 import { Schema, model } from 'mongoose';
 import bcrypt from 'bcryptjs';
+import * as jose from 'jose';
+
 export interface UserDocument {
   name: string;
   email: string;
@@ -8,6 +10,8 @@ export interface UserDocument {
   resetPasswordToken?: string;
   resetPasswordExpire?: Date;
   createdAt?: Date;
+  matchPassword(enteredPassword: string): Promise<boolean>;
+  getToken(): Promise<string>;
 }
 
 const UserSchema = new Schema<UserDocument>({
@@ -56,5 +60,19 @@ UserSchema.pre('save', async function (next) {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
+
+UserSchema.methods.matchPassword = async function (enteredPassword: string) {
+  return bcrypt.compare(enteredPassword, this.password);
+};
+
+UserSchema.methods.getToken = async function () {
+  const encoder = new TextEncoder();
+  const JWT_SECRET = encoder.encode(Bun.env.JWT_SECRET);
+
+  return new jose.SignJWT({ id: this._id })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setExpirationTime(Bun.env.JWT_EXPIRE as string)
+    .sign(JWT_SECRET);
+};
 
 export default model('User', UserSchema);
