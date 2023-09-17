@@ -8,6 +8,7 @@ const OrgModel = new Schema<OrgModelDocument>({
   name: {
     type: String,
     required: [true, 'Name is required'],
+    minlength: [4, 'Name must be at least 4 characters'],
   },
   slug: {
     type: String,
