@@ -77,4 +77,22 @@ org.put('/:slug', protect, async (c) => {
   });
 });
 
+// @desc    Delete org by slug
+// *route   DELETE /org/:id
+// !method  Private
+org.delete('/:slug', protect, async (c) => {
+  const slug = c.req.param('slug');
+
+  const org = await Org.findOneAndDelete({ slug });
+
+  if (!org) {
+    throw new ErrorResponse('Org not found', 404);
+  }
+
+  return c.json({
+    success: true,
+    data: org,
+  });
+});
+
 export default org;
