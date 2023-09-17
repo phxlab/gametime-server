@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import User from './model';
+import ErrorResponse from '../../errors/errorResponse';
 
 const users = new Hono();
 
@@ -49,13 +50,7 @@ users.get('/:id', async (c) => {
   const user = await User.findById(c.req.param('id'));
 
   if (!user) {
-    return c.json(
-      {
-        success: false,
-        message: 'User not found',
-      },
-      404,
-    );
+    throw new ErrorResponse('User not found', 404);
   }
 
   return c.json(
@@ -76,10 +71,7 @@ users.put('/:id', async (c) => {
   const user = await User.findById(c.req.param('id'));
 
   if (!user) {
-    return c.json({
-      success: false,
-      message: 'User not found',
-    });
+    throw new ErrorResponse('User not found', 404);
   }
 
   user.name = data.name || user.email;
@@ -105,13 +97,7 @@ users.delete('/:id', async (c) => {
   const user = await User.findByIdAndDelete(c.req.param('id'));
 
   if (!user) {
-    return c.json(
-      {
-        success: false,
-        message: 'User not found',
-      },
-      404,
-    );
+    throw new ErrorResponse('User not found', 404);
   }
 
   return c.json(
