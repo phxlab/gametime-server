@@ -1,9 +1,9 @@
-import { expect, test, describe, beforeAll } from 'bun:test';
+import { expect, test, describe } from 'bun:test';
 import r from 'supertest';
-import mongoose from 'mongoose';
 import User from '../src/blueprints/users/model';
+import { closeMongoose, startMongoose } from './config/db';
 
-const request = r('http://server:3000');
+const request = r('http://localhost:3030');
 
 let userId: string;
 
@@ -14,31 +14,22 @@ const testUser: { [key: string]: string } = {
   username: 'test',
 };
 
-beforeAll(async () => {
-  const options = {
-    maxPoolSize: 10,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    dbName: 'gametime',
-  };
-
-  await mongoose.connect('mongodb://root:password@mongodb/', options);
-  await User.deleteMany();
-
-  await User.create({
-    name: 'John Doe',
-    email: 'jdoe@gmail.com',
-    username: 'john',
-    password: 'password',
-  });
-});
-
 describe('Create user', () => {
-  test('with no data sent - 400', async () => {
+  test('with no auth - 401', async () => {
     const res = await request.post('/users').send('');
 
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with no data sent - 400', async () => {
+    const res = await request
+      .post('/users')
+      .send('')
+      .auth(global.__token, { type: 'bearer' });
+
     expect(res.status).toBe(400);
-    expect(res.body.sucess).toBeFalsy();
+    expect(res.body.success).toBeFalsy();
   });
 
   // @ts-ignore
@@ -47,39 +38,51 @@ describe('Create user', () => {
     async (field: string) => {
       const { [field]: x, ...rest } = testUser;
 
-      const res = await request.post('/users').send(rest);
+      const res = await request
+        .post('/users')
+        .send(rest)
+        .auth(global.__token, { type: 'bearer' });
 
       expect(res.status).toBe(400);
-      expect(res.body.sucess).toBeFalsy();
+      expect(res.body.success).toBeFalsy();
     },
   );
 
   test('with existing email - 409', async () => {
-    const res = await request.post('/users').send({
-      name: 'Test User',
-      email: 'jdoe@gmail.com',
-      username: 'test',
-      password: 'password',
-    });
+    const res = await request
+      .post('/users')
+      .send({
+        name: 'Test User',
+        email: 'jdoe@gmail.com',
+        username: 'test',
+        password: 'password',
+      })
+      .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(409);
     expect(res.body.success).toBeFalsy();
   });
 
   test('with existing username - 409', async () => {
-    const res = await request.post('/users').send({
-      name: 'Test User',
-      email: 'test@gmail.com',
-      username: 'john',
-      password: 'password',
-    });
+    const res = await request
+      .post('/users')
+      .send({
+        name: 'Test User',
+        email: 'test@gmail.com',
+        username: 'john',
+        password: 'password',
+      })
+      .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(409);
     expect(res.body.success).toBeFalsy();
   });
 
   test('with success - 201', async () => {
-    const res = await request.post('/users').send(testUser);
+    const res = await request
+      .post('/users')
+      .send(testUser)
+      .auth(global.__token, { type: 'bearer' });
 
     userId = res.body.data._id;
 
@@ -90,31 +93,53 @@ describe('Create user', () => {
 });
 
 describe('Get all users', () => {
-  test('with success - 200', async () => {
+  test('with no auth - 401', async () => {
     const res = await request.get('/users');
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with success - 200', async () => {
+    const res = await request
+      .get('/users')
+      .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBeTruthy();
   });
 });
 
-describe('Get users', () => {
-  test('with bad id - 404', async () => {
+describe('Get user', () => {
+  test('with no auth - 401', async () => {
     const res = await request.get(`/users/123`);
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with bad id - 404', async () => {
+    const res = await request
+      .get(`/users/123`)
+      .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(404);
     expect(res.body.success).toBeFalsy();
   });
 
   test('that does not exist - 404', async () => {
-    const res = await request.get(`/users/650577d73cb80d2b535a9810`);
+    const res = await request
+      .get(`/users/650577d73cb80d2b535a9810`)
+      .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(404);
     expect(res.body.success).toBeFalsy();
   });
 
   test('with success - 200', async () => {
-    const res = await request.get(`/users/${userId}`);
+    const res = await request
+      .get(`/users/${userId}`)
+      .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBeTruthy();
@@ -122,15 +147,27 @@ describe('Get users', () => {
 });
 
 describe('Update user', () => {
-  test('with invalid params - 400', async () => {
+  test('with no auth - 401', async () => {
     const res = await request.put(`/users/${userId}`);
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with invalid params - 400', async () => {
+    const res = await request
+      .put(`/users/${userId}`)
+      .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(400);
     expect(res.body.success).toBeFalsy();
   });
 
   test('with invalid email - 400', async () => {
-    const res = await request.put(`/users/${userId}`).send({ email: 'test' });
+    const res = await request
+      .put(`/users/${userId}`)
+      .send({ email: 'test' })
+      .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(400);
     expect(res.body.success).toBeFalsy();
@@ -139,7 +176,8 @@ describe('Update user', () => {
   test('with existing email - 409', async () => {
     const res = await request
       .put(`/users/${userId}`)
-      .send({ email: 'jdoe@gmail.com' });
+      .send({ email: 'jdoe@gmail.com' })
+      .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(409);
     expect(res.body.success).toBeFalsy();
@@ -148,7 +186,8 @@ describe('Update user', () => {
   test('with existing username - 409', async () => {
     const res = await request
       .put(`/users/${userId}`)
-      .send({ username: 'john' });
+      .send({ username: 'john' })
+      .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(409);
     expect(res.body.success).toBeFalsy();
@@ -157,9 +196,12 @@ describe('Update user', () => {
   test('with success - 200', async () => {
     const res = await request
       .put(`/users/${userId}`)
-      .send({ name: 'Test Updated', password: 'password' });
+      .send({ name: 'Test Updated', password: 'password' })
+      .auth(global.__token, { type: 'bearer' });
 
+    await startMongoose();
     const user = await User.findById(userId).select('+password');
+    await closeMongoose();
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBeTruthy();
@@ -169,22 +211,35 @@ describe('Update user', () => {
 });
 
 describe('Delete user', () => {
-  test('with bad id - 404', async () => {
+  test('with bad id - 401', async () => {
     const res = await request.delete(`/users/123`);
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with bad id - 404', async () => {
+    const res = await request
+      .delete(`/users/123`)
+      .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(404);
     expect(res.body.success).toBeFalsy();
   });
 
   test('that does not exist - 404', async () => {
-    const res = await request.delete(`/users/650577d73cb80d2b535a9810`);
+    const res = await request
+      .delete(`/users/650577d73cb80d2b535a9810`)
+      .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(404);
     expect(res.body.success).toBeFalsy();
   });
 
   test('with success - 200', async () => {
-    const res = await request.delete(`/users/${userId}`);
+    const res = await request
+      .delete(`/users/${userId}`)
+      .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBeTruthy();
