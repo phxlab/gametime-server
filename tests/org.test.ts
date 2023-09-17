@@ -5,7 +5,7 @@ const request = r('http://localhost:3030');
 
 describe('Create org', () => {
   const validOrg = {
-    name: 'Wildcats High School',
+    name: 'Wildcats School',
     slug: 'wildcats',
   };
 
@@ -88,6 +88,69 @@ describe('Get all orgs', () => {
   test('success - 200', async () => {
     const res = await request
       .get('/org')
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
+});
+
+describe('Get single org', () => {
+  test('with invalid slug - 404', async () => {
+    const res = await request.get('/org/invalid');
+
+    expect(res.status).toBe(404);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with success - 200', async () => {
+    const res = await request.get('/org/test');
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
+});
+
+describe('Update single org', () => {
+  test('with no auth', async () => {
+    const res = await request.put('/org/wildcats').send({
+      name: 'Wildcats High School',
+    });
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with no data', async () => {
+    const res = await request
+      .put('/org/wildcats')
+      .send()
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('without updating slug', async () => {
+    const res = await request
+      .put('/org/wildcats')
+      .send({
+        name: 'Wildcats High School',
+        slug: 'whs',
+      })
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+    expect(res.body.data.slug).toBe('wildcats');
+  });
+
+  test('with success', async () => {
+    const res = await request
+      .put('/org/wildcats')
+      .send({
+        name: 'Wildcats High School',
+      })
       .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(200);
