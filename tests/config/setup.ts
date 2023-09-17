@@ -16,7 +16,7 @@ beforeAll(async () => {
     password: 'password',
   });
 
-  const org = await Org.create({
+  await Org.create({
     name: 'Test Org',
     slug: 'test',
   });
