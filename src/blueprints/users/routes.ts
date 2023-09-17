@@ -74,7 +74,7 @@ users.put('/:id', async (c) => {
     throw new ErrorResponse('User not found', 404);
   }
 
-  user.name = data.name || user.email;
+  user.name = data.name || user.name;
   user.email = data.email?.toLowerCase() || user.email;
   user.username = data.username?.toLowerCase() || user.username;
 
