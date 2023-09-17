@@ -20,14 +20,8 @@ services:
       - .:/app
     depends_on:
       - mongodb
-
-  test:
-    container_name: tests
-    build:
-      context: ./tests
-      dockerfile: Dockerfile
-    volumes:
-      - .:/app
+    ports:
+      - "3030:3000"
 
 networks:
   testNetwork:
