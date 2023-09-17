@@ -112,7 +112,7 @@ describe('Get single org', () => {
 });
 
 describe('Update single org', () => {
-  test('with no auth', async () => {
+  test('with no auth - 401', async () => {
     const res = await request.put('/org/wildcats').send({
       name: 'Wildcats High School',
     });
@@ -121,7 +121,7 @@ describe('Update single org', () => {
     expect(res.body.success).toBeFalsy();
   });
 
-  test('with no data', async () => {
+  test('with no data - 400', async () => {
     const res = await request
       .put('/org/wildcats')
       .send()
@@ -131,7 +131,7 @@ describe('Update single org', () => {
     expect(res.body.success).toBeFalsy();
   });
 
-  test('without updating slug', async () => {
+  test('without updating slug - 200', async () => {
     const res = await request
       .put('/org/wildcats')
       .send({
@@ -145,12 +145,39 @@ describe('Update single org', () => {
     expect(res.body.data.slug).toBe('wildcats');
   });
 
-  test('with success', async () => {
+  test('with success - 200', async () => {
     const res = await request
       .put('/org/wildcats')
       .send({
         name: 'Wildcats High School',
       })
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
+});
+
+describe('Delete single org', () => {
+  test('with no auth - 401', async () => {
+    const res = await request.delete('/org/wildcats');
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with invalid slug - 404', async () => {
+    const res = await request
+      .delete('/org/invalid')
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(404);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test.todo('success - 200', async () => {
+    const res = await request
+      .delete('/org/wildcats')
       .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(200);
