@@ -1,12 +1,12 @@
 import { Hono } from 'hono';
 import User from './model';
 
-const auth = new Hono();
+const users = new Hono();
 
 // @desc    Create user
 // *route   POST /users
 // !method  Private
-auth.post('/', async (c) => {
+users.post('/', async (c) => {
   const { name, email, password, username } = await c.req.json();
 
   const data = await User.create({
@@ -30,7 +30,7 @@ auth.post('/', async (c) => {
 // @desc    Get all users
 // *route   GET /users
 // !method  Private
-auth.get('/', async (c) => {
+users.get('/', async (c) => {
   const users = await User.find();
 
   return c.json(
@@ -45,7 +45,7 @@ auth.get('/', async (c) => {
 // @desc    Get user by id
 // *route   GET /users/:id
 // !method  Private
-auth.get('/:id', async (c) => {
+users.get('/:id', async (c) => {
   const user = await User.findById(c.req.param('id'));
 
   if (!user) {
@@ -70,7 +70,7 @@ auth.get('/:id', async (c) => {
 // @desc    Update user by id
 // *route   PUT /users/:id
 // !method  Private
-auth.put('/:id', async (c) => {
+users.put('/:id', async (c) => {
   const data = await c.req.json();
 
   const user = await User.findById(c.req.param('id'));
@@ -83,8 +83,8 @@ auth.put('/:id', async (c) => {
   }
 
   user.name = data.name || user.email;
-  user.email = data.email.toLowerCase() || user.email;
-  user.username = data.username.toLowerCase() || user.username;
+  user.email = data.email?.toLowerCase() || user.email;
+  user.username = data.username?.toLowerCase() || user.username;
 
   if (data.password) {
     user.password = data.password;
@@ -101,7 +101,7 @@ auth.put('/:id', async (c) => {
 // @desc    Delete user by id
 // *route   DELETE /users/:id
 // !method  Private
-auth.delete('/:id', async (c) => {
+users.delete('/:id', async (c) => {
   const user = await User.findByIdAndDelete(c.req.param('id'));
 
   if (!user) {
@@ -123,4 +123,4 @@ auth.delete('/:id', async (c) => {
   );
 });
 
-export default auth;
+export default users;
