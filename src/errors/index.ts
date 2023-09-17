@@ -13,6 +13,7 @@ const errorHandler = async (error: any, c: Context) => {
   let err: Error | null = {
     message: error.message,
     stack: error.stack,
+    statusCode: error.statusCode,
   };
 
   if (error.stack) {
