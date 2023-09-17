@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "bun run --hot src/index.ts",
-    "test": "docker compose up -d && docker logs tests -f"
+    "test": "bun test --watch"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
