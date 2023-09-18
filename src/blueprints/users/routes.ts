@@ -12,9 +12,9 @@ users.post('/', async (c) => {
 
   const data = await User.create({
     name,
-    email: email.toLowerCase(),
+    email: email?.toLowerCase(),
     password,
-    username: username.toLowerCase(),
+    username: username?.toLowerCase(),
   });
 
   const { password: pass, ...responseData } = data.toObject();

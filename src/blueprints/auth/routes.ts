@@ -15,7 +15,7 @@ auth.post('/login', async (c) => {
     throw new ErrorResponse('Enter a username and password', 400);
   }
 
-  username = username.toLowerCase();
+  username = username?.toLowerCase();
 
   let user = await User.findOne({
     $or: [{ username }, { email: username }],

@@ -12,7 +12,7 @@ org.post('/', protect, async (c) => {
   const { name, slug } = await c.req.json();
 
   const data = await Org.create({
-    name: name.toLowerCase(),
+    name: name?.toLowerCase(),
     slug,
   });
 
