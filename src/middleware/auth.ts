@@ -1,6 +1,6 @@
 import { middleware } from 'hono/factory';
 import * as jose from 'jose';
-import ErrorResponse from '../errors/errorResponse';
+import { ErrorResponse } from 'hono-error-handler';
 import User from '../blueprints/users/model';
 import { Context } from 'hono';
 

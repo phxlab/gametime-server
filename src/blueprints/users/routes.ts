@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import User from './model';
-import ErrorResponse from '../../errors/errorResponse';
+import { ErrorResponse } from 'hono-error-handler';
 
 const users = new Hono();
 

@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import Org from './model';
 import protect from '../../middleware/auth';
-import ErrorResponse from '../../errors/errorResponse';
+import { ErrorResponse } from 'hono-error-handler';
 
 const org = new Hono();
 

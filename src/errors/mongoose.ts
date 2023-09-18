@@ -1,10 +1,10 @@
-import { CustomErrorHandler } from './index';
+import { CustomErrorHandler } from 'hono-error-handler';
 
 const handleMongooseErrors = (error: CustomErrorHandler) => {
   // Mongoose bad ObjectId
   if (error.name === 'CastError') {
     error.message = 'Resource not found';
-    error.statusCode = 400;
+    error.statusCode = 404;
     return error;
   }
 
@@ -12,7 +12,7 @@ const handleMongooseErrors = (error: CustomErrorHandler) => {
   if (error.code === 11000) {
     const field = Object.keys(error.keyValue)[0];
     error.message = `${field} is already registered`;
-    error.statusCode = 400;
+    error.statusCode = 409;
     return error;
   }
 
