@@ -1,4 +1,6 @@
-const handleMongooseErrors = (error: any) => {
+import { CustomErrorHandler } from './index';
+
+const handleMongooseErrors = (error: CustomErrorHandler) => {
   // Mongoose bad ObjectId
   if (error.name === 'CastError') {
     error.message = 'Resource not found';

@@ -4,9 +4,20 @@ import handleHonoErrors from './hono';
 
 const errorHandlers = [mongooseErrorHandler, handleHonoErrors];
 
+export interface CustomErrorHandler {
+  statusCode?: number;
+  stack?: string;
+  message: string;
+  [key: string]: any;
+}
+
 const errorHandler =
   (stack = true): ErrorHandler =>
-  async (error: any, c) => {
+  async (err, c) => {
+    let error: CustomErrorHandler = err;
+
+    console.log(typeof error.stack);
+
     if (stack && error.stack) {
       console.error(error.stack);
     }
