@@ -1,6 +1,4 @@
 import { ErrorHandler } from 'hono';
-import mongooseErrorHandler from './mongoose';
-import handleHonoErrors from './hono';
 
 export interface CustomErrorHandler {
   statusCode?: number;
