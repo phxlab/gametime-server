@@ -6,12 +6,15 @@ import users from './blueprints/users/routes';
 import org from './blueprints/organizations/routes';
 import auth from './blueprints/auth/routes';
 import protect from './middleware/auth';
+import mongooseErrorHandler from './errors/mongoose';
+import handleHonoErrors from './errors/hono';
 
 (async () => {
   await dbConnect();
 })();
 
 const app = new Hono();
+const errorHandlers = [mongooseErrorHandler, handleHonoErrors];
 
 app.use('*', logger());
 app.get('/', (c) =>
@@ -25,6 +28,6 @@ app.route('/auth', auth);
 app.use('/users/*', protect);
 app.route('/users', users);
 app.route('/org', org);
-app.onError(errorHandler(false));
+app.onError(errorHandler(errorHandlers, false));
 
 export default app;

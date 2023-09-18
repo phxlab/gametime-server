@@ -2,8 +2,6 @@ import { ErrorHandler } from 'hono';
 import mongooseErrorHandler from './mongoose';
 import handleHonoErrors from './hono';
 
-const errorHandlers = [mongooseErrorHandler, handleHonoErrors];
-
 export interface CustomErrorHandler {
   statusCode?: number;
   stack?: string;
@@ -12,13 +10,13 @@ export interface CustomErrorHandler {
 }
 
 const errorHandler =
-  (stack = true): ErrorHandler =>
+  (errorHandlers: Function[], printStack = true): ErrorHandler =>
   async (err, c) => {
     let error: CustomErrorHandler = err;
 
     console.log(typeof error.stack);
 
-    if (stack && error.stack) {
+    if (printStack && error.stack) {
       console.error(error.stack);
     }
 
