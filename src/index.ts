@@ -25,6 +25,6 @@ app.route('/auth', auth);
 app.use('/users/*', protect);
 app.route('/users', users);
 app.route('/org', org);
-app.onError(errorHandler);
+app.onError(errorHandler(false));
 
 export default app;
