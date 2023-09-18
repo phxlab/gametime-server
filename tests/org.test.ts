@@ -175,7 +175,7 @@ describe('Delete single org', () => {
     expect(res.body.success).toBeFalsy();
   });
 
-  test.todo('success - 200', async () => {
+  test('success - 200', async () => {
     const res = await request
       .delete('/org/wildcats')
       .auth(global.__token, { type: 'bearer' });
