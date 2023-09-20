@@ -38,7 +38,7 @@ org.get('/', protect, async (c) => {
 });
 
 // @desc    Get org by slug
-// *route   GET /org/:id
+// *route   GET /org/:slug
 // ?method  Public
 org.get('/:slug', async (c) => {
   const slug = c.req.param('slug');
@@ -56,7 +56,7 @@ org.get('/:slug', async (c) => {
 });
 
 // @desc    Update org by slug
-// *route   PUT /org/:id
+// *route   PUT /org/:slug
 // !method  Private
 org.put('/:slug', protect, async (c) => {
   const slug = c.req.param('slug');
@@ -78,7 +78,7 @@ org.put('/:slug', protect, async (c) => {
 });
 
 // @desc    Delete org by slug
-// *route   DELETE /org/:id
+// *route   DELETE /org/:slug
 // !method  Private
 org.delete('/:slug', protect, async (c) => {
   const slug = c.req.param('slug');
