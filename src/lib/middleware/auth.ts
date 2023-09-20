@@ -1,7 +1,7 @@
 import { middleware } from 'hono/factory';
 import * as jose from 'jose';
 import { ErrorResponse } from 'hono-error-handler';
-import User from '../blueprints/users/model';
+import User from '../../models/users';
 import { Context } from 'hono';
 
 const protect = middleware(async (c: Context, next) => {

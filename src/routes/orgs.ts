@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
-import Org from './model';
-import protect from '../../middleware/auth';
 import { ErrorResponse } from 'hono-error-handler';
+import { Org } from '../models';
+import protect from '../lib/middleware/auth';
 
 const org = new Hono();
 
@@ -10,7 +10,6 @@ const org = new Hono();
 // !method  Private
 org.post('/', protect, async (c) => {
   const { name, slug } = await c.req.json();
-
   const data = await Org.create({
     name: name?.toLowerCase(),
     slug,

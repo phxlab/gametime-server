@@ -1,6 +1,6 @@
 import { expect, test, describe } from 'bun:test';
 import r from 'supertest';
-import User from '../src/blueprints/users/model';
+import User from '../src/models/users';
 import { closeMongoose, startMongoose } from './config/db';
 
 const request = r('http://localhost:3030');

@@ -1,7 +1,7 @@
 import { Context, Hono } from 'hono';
-import User from '../users/model';
 import { ErrorResponse } from 'hono-error-handler';
-import protect from '../../middleware/auth';
+import { User } from '../models';
+import protect from '../lib/middleware/auth';
 
 const auth = new Hono();
 

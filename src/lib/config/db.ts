@@ -1,4 +1,4 @@
-import mongoose, { mongo } from 'mongoose';
+import mongoose from 'mongoose';
 
 const dbConnect = async () => {
   let MONGO_URI = Bun.env.MONGO_URI as string;

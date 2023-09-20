@@ -1,8 +1,6 @@
 import { beforeAll } from 'bun:test';
-import User from '../../src/blueprints/users/model';
 import { closeMongoose, startMongoose } from './db';
-import Org from '../../src/blueprints/organizations/model';
-import Store from '../../src/blueprints/stores/model';
+import { Org, Store, User } from '../../src/models';
 import { orgs, stores } from './data';
 
 beforeAll(async () => {

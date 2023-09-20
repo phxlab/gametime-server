@@ -1,13 +1,10 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 import { errorHandler } from 'hono-error-handler';
-import dbConnect from './config/db';
-import users from './blueprints/users/routes';
-import org from './blueprints/organizations/routes';
-import auth from './blueprints/auth/routes';
-import protect from './middleware/auth';
-import errorHandlers from './errors';
-import stores from './blueprints/stores/routes';
+import dbConnect from './lib/config/db';
+import protect from './lib/middleware/auth';
+import errorHandlers from './lib/errors';
+import { auth, orgs, stores, users } from './routes';
 
 (async () => {
   await dbConnect();
@@ -26,8 +23,9 @@ app.get('/', (c) =>
 app.route('/auth', auth);
 app.use('/users/*', protect);
 app.route('/users', users);
-app.route('/org', org);
-app.route('/org/:orgSlug/stores', stores);
+app.route('/orgs', orgs);
+app.route('/orgs/:orgSlug/stores', stores);
 app.onError(errorHandler(errorHandlers));
 
+// noinspection JSUnusedGlobalSymbols
 export default app;

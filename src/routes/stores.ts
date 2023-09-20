@@ -1,8 +1,7 @@
 import { Context, Hono } from 'hono';
 import { ErrorResponse } from 'hono-error-handler';
-import Store from './model';
-import Org from '../organizations/model';
-import protect from '../../middleware/auth';
+import { Org, Store } from '../models';
+import protect from '../lib/middleware/auth';
 
 const stores = new Hono();
 
