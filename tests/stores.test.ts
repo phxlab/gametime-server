@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import r from 'supertest';
 
-const request = r('http://localhost:3030/org');
+const request = r('http://localhost:3030/orgs');
 
 describe('Create store', () => {
   const storeData = {

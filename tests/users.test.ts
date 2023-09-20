@@ -1,9 +1,9 @@
-import { expect, test, describe } from 'bun:test';
+import { describe, expect, test } from 'bun:test';
 import r from 'supertest';
-import User from '../src/models/users';
+import { User } from '../src/models';
 import { closeMongoose, startMongoose } from './config/db';
 
-const request = r('http://localhost:3030');
+const request = r('http://localhost:3030/users');
 
 let userId: string;
 
@@ -16,7 +16,7 @@ const testUser: { [key: string]: string } = {
 
 describe('Create user', () => {
   test('with no auth - 401', async () => {
-    const res = await request.post('/users').send('');
+    const res = await request.post('').send('');
 
     expect(res.status).toBe(401);
     expect(res.body.success).toBeFalsy();
@@ -24,7 +24,7 @@ describe('Create user', () => {
 
   test('with no data sent - 400', async () => {
     const res = await request
-      .post('/users')
+      .post('')
       .send('')
       .auth(global.__token, { type: 'bearer' });
 
@@ -39,7 +39,7 @@ describe('Create user', () => {
       const { [field]: x, ...rest } = testUser;
 
       const res = await request
-        .post('/users')
+        .post('')
         .send(rest)
         .auth(global.__token, { type: 'bearer' });
 
@@ -50,7 +50,7 @@ describe('Create user', () => {
 
   test('with existing email - 409', async () => {
     const res = await request
-      .post('/users')
+      .post('')
       .send({
         name: 'Test User',
         email: 'jdoe@gmail.com',
@@ -65,7 +65,7 @@ describe('Create user', () => {
 
   test('with existing username - 409', async () => {
     const res = await request
-      .post('/users')
+      .post('')
       .send({
         name: 'Test User',
         email: 'test@gmail.com',
@@ -80,7 +80,7 @@ describe('Create user', () => {
 
   test('with success - 201', async () => {
     const res = await request
-      .post('/users')
+      .post('')
       .send(testUser)
       .auth(global.__token, { type: 'bearer' });
 
@@ -94,16 +94,14 @@ describe('Create user', () => {
 
 describe('Get all users', () => {
   test('with no auth - 401', async () => {
-    const res = await request.get('/users');
+    const res = await request.get('');
 
     expect(res.status).toBe(401);
     expect(res.body.success).toBeFalsy();
   });
 
   test('with success - 200', async () => {
-    const res = await request
-      .get('/users')
-      .auth(global.__token, { type: 'bearer' });
+    const res = await request.get('').auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBeTruthy();
@@ -112,7 +110,7 @@ describe('Get all users', () => {
 
 describe('Get user', () => {
   test('with no auth - 401', async () => {
-    const res = await request.get(`/users/123`);
+    const res = await request.get(`/123`);
 
     expect(res.status).toBe(401);
     expect(res.body.success).toBeFalsy();
@@ -120,7 +118,7 @@ describe('Get user', () => {
 
   test('with bad id - 404', async () => {
     const res = await request
-      .get(`/users/123`)
+      .get(`/123`)
       .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(404);
@@ -129,7 +127,7 @@ describe('Get user', () => {
 
   test('that does not exist - 404', async () => {
     const res = await request
-      .get(`/users/650577d73cb80d2b535a9810`)
+      .get(`/650577d73cb80d2b535a9810`)
       .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(404);
@@ -138,7 +136,7 @@ describe('Get user', () => {
 
   test('with success - 200', async () => {
     const res = await request
-      .get(`/users/${userId}`)
+      .get(`/${userId}`)
       .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(200);
@@ -148,7 +146,7 @@ describe('Get user', () => {
 
 describe('Update user', () => {
   test('with no auth - 401', async () => {
-    const res = await request.put(`/users/${userId}`);
+    const res = await request.put(`/${userId}`);
 
     expect(res.status).toBe(401);
     expect(res.body.success).toBeFalsy();
@@ -156,7 +154,7 @@ describe('Update user', () => {
 
   test('with invalid params - 400', async () => {
     const res = await request
-      .put(`/users/${userId}`)
+      .put(`/${userId}`)
       .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(400);
@@ -165,7 +163,7 @@ describe('Update user', () => {
 
   test('with invalid email - 400', async () => {
     const res = await request
-      .put(`/users/${userId}`)
+      .put(`/${userId}`)
       .send({ email: 'test' })
       .auth(global.__token, { type: 'bearer' });
 
@@ -175,7 +173,7 @@ describe('Update user', () => {
 
   test('with existing email - 409', async () => {
     const res = await request
-      .put(`/users/${userId}`)
+      .put(`/${userId}`)
       .send({ email: 'jdoe@gmail.com' })
       .auth(global.__token, { type: 'bearer' });
 
@@ -185,7 +183,7 @@ describe('Update user', () => {
 
   test('with existing username - 409', async () => {
     const res = await request
-      .put(`/users/${userId}`)
+      .put(`/${userId}`)
       .send({ username: 'john' })
       .auth(global.__token, { type: 'bearer' });
 
@@ -195,7 +193,7 @@ describe('Update user', () => {
 
   test('with success - 200', async () => {
     const res = await request
-      .put(`/users/${userId}`)
+      .put(`/${userId}`)
       .send({ name: 'Test Updated', password: 'password' })
       .auth(global.__token, { type: 'bearer' });
 
@@ -212,7 +210,7 @@ describe('Update user', () => {
 
 describe('Delete user', () => {
   test('with bad id - 401', async () => {
-    const res = await request.delete(`/users/123`);
+    const res = await request.delete(`/123`);
 
     expect(res.status).toBe(401);
     expect(res.body.success).toBeFalsy();
@@ -220,7 +218,7 @@ describe('Delete user', () => {
 
   test('with bad id - 404', async () => {
     const res = await request
-      .delete(`/users/123`)
+      .delete(`/123`)
       .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(404);
@@ -229,7 +227,7 @@ describe('Delete user', () => {
 
   test('that does not exist - 404', async () => {
     const res = await request
-      .delete(`/users/650577d73cb80d2b535a9810`)
+      .delete(`/650577d73cb80d2b535a9810`)
       .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(404);
@@ -238,7 +236,7 @@ describe('Delete user', () => {
 
   test('with success - 200', async () => {
     const res = await request
-      .delete(`/users/${userId}`)
+      .delete(`/${userId}`)
       .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(200);

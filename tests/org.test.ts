@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import r from 'supertest';
 
-const request = r('http://localhost:3030');
+const request = r('http://localhost:3030/orgs');
 
 describe('Create org', () => {
   const validOrg = {
@@ -10,7 +10,7 @@ describe('Create org', () => {
   };
 
   test('with no auth - 401', async () => {
-    const res = await request.post('/org').send(validOrg);
+    const res = await request.post('').send(validOrg);
 
     expect(res.status).toBe(401);
     expect(res.body.success).toBeFalsy();
@@ -18,7 +18,7 @@ describe('Create org', () => {
 
   test('with no name - 400', async () => {
     const res = await request
-      .post('/org')
+      .post('')
       .send({
         slug: 'wildcats',
       })
@@ -30,7 +30,7 @@ describe('Create org', () => {
 
   test('with no slug - 400', async () => {
     const res = await request
-      .post('/org')
+      .post('')
       .send({
         name: 'Wildcats High School',
       })
@@ -42,7 +42,7 @@ describe('Create org', () => {
 
   test('with invalid slug - 400', async () => {
     const res = await request
-      .post('/org')
+      .post('')
       .send({
         name: 'Wildcats High School',
         slug: 'Wildcats High School',
@@ -55,7 +55,7 @@ describe('Create org', () => {
 
   test('with existing slug - 409', async () => {
     const res = await request
-      .post('/org')
+      .post('')
       .send({
         name: 'Wildcats High School',
         slug: 'ehs',
@@ -68,7 +68,7 @@ describe('Create org', () => {
 
   test('success - 201', async () => {
     const res = await request
-      .post('/org')
+      .post('')
       .send(validOrg)
       .auth(global.__token, { type: 'bearer' });
 
@@ -79,16 +79,14 @@ describe('Create org', () => {
 
 describe('Get all orgs', () => {
   test('with no auth - 401', async () => {
-    const res = await request.get('/org');
+    const res = await request.get('');
 
     expect(res.status).toBe(401);
     expect(res.body.success).toBeFalsy();
   });
 
   test('success - 200', async () => {
-    const res = await request
-      .get('/org')
-      .auth(global.__token, { type: 'bearer' });
+    const res = await request.get('').auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBeTruthy();
@@ -97,14 +95,14 @@ describe('Get all orgs', () => {
 
 describe('Get single org', () => {
   test('with invalid slug - 404', async () => {
-    const res = await request.get('/org/invalid');
+    const res = await request.get('/invalid');
 
     expect(res.status).toBe(404);
     expect(res.body.success).toBeFalsy();
   });
 
   test('with success - 200', async () => {
-    const res = await request.get('/org/ehs');
+    const res = await request.get('/ehs');
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBeTruthy();
@@ -113,7 +111,7 @@ describe('Get single org', () => {
 
 describe('Update single org', () => {
   test('with no auth - 401', async () => {
-    const res = await request.put('/org/wildcats').send({
+    const res = await request.put('/wildcats').send({
       name: 'Wildcats High School',
     });
 
@@ -123,7 +121,7 @@ describe('Update single org', () => {
 
   test('with no data - 400', async () => {
     const res = await request
-      .put('/org/wildcats')
+      .put('/wildcats')
       .send()
       .auth(global.__token, { type: 'bearer' });
 
@@ -133,7 +131,7 @@ describe('Update single org', () => {
 
   test('without updating slug - 200', async () => {
     const res = await request
-      .put('/org/wildcats')
+      .put('/wildcats')
       .send({
         name: 'Wildcats High School',
         slug: 'whs',
@@ -147,7 +145,7 @@ describe('Update single org', () => {
 
   test('with success - 200', async () => {
     const res = await request
-      .put('/org/wildcats')
+      .put('/wildcats')
       .send({
         name: 'Wildcats High School',
       })
@@ -160,7 +158,7 @@ describe('Update single org', () => {
 
 describe('Delete single org', () => {
   test('with no auth - 401', async () => {
-    const res = await request.delete('/org/wildcats');
+    const res = await request.delete('/wildcats');
 
     expect(res.status).toBe(401);
     expect(res.body.success).toBeFalsy();
@@ -168,7 +166,7 @@ describe('Delete single org', () => {
 
   test('with invalid slug - 404', async () => {
     const res = await request
-      .delete('/org/invalid')
+      .delete('/invalid')
       .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(404);
@@ -177,7 +175,7 @@ describe('Delete single org', () => {
 
   test('success - 200', async () => {
     const res = await request
-      .delete('/org/wildcats')
+      .delete('/wildcats')
       .auth(global.__token, { type: 'bearer' });
 
     expect(res.status).toBe(200);
