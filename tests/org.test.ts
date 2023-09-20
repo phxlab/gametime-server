@@ -58,7 +58,7 @@ describe('Create org', () => {
       .post('/org')
       .send({
         name: 'Wildcats High School',
-        slug: 'test',
+        slug: 'ehs',
       })
       .auth(global.__token, { type: 'bearer' });
 
@@ -104,7 +104,7 @@ describe('Get single org', () => {
   });
 
   test('with success - 200', async () => {
-    const res = await request.get('/org/test');
+    const res = await request.get('/org/ehs');
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBeTruthy();
