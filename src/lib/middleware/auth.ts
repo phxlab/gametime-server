@@ -1,10 +1,9 @@
 import { middleware } from 'hono/factory';
 import * as jose from 'jose';
 import { ErrorResponse } from 'hono-error-handler';
-import User from '../../models/users';
-import { Context } from 'hono';
+import { User } from '../../models';
 
-const protect = middleware(async (c: Context, next) => {
+const protect = middleware(async (c, next) => {
   let token = c.req.header('Authorization');
 
   if (!token || !token.startsWith('Bearer')) {
