@@ -14,7 +14,7 @@ export interface UserDocument {
   getToken(): Promise<string>;
 }
 
-const UserSchema = new Schema<UserDocument>({
+const User = new Schema<UserDocument>({
   name: {
     type: String,
     required: [true, 'Name is required.'],
@@ -52,7 +52,7 @@ const UserSchema = new Schema<UserDocument>({
   },
 });
 
-UserSchema.pre('save', async function (next) {
+User.pre('save', async function (next) {
   if (!this.isModified('password')) {
     next();
   }
@@ -61,11 +61,11 @@ UserSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-UserSchema.methods.matchPassword = async function (enteredPassword: string) {
+User.methods.matchPassword = async function (enteredPassword: string) {
   return bcrypt.compare(enteredPassword, this.password);
 };
 
-UserSchema.methods.getToken = async function () {
+User.methods.getToken = async function () {
   const encoder = new TextEncoder();
   const JWT_SECRET = encoder.encode(Bun.env.JWT_SECRET);
 
@@ -75,4 +75,4 @@ UserSchema.methods.getToken = async function () {
     .sign(JWT_SECRET);
 };
 
-export default model('User', UserSchema);
+export default model('User', User);
