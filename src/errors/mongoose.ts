@@ -1,6 +1,6 @@
-import { CustomErrorHandler } from 'hono-error-handler';
+import { Error } from 'hono-error-handler';
 
-const handleMongooseErrors = (error: CustomErrorHandler) => {
+const handleMongooseErrors = (error: Error) => {
   // Mongoose bad ObjectId
   if (error.name === 'CastError') {
     error.message = 'Resource not found';
@@ -10,6 +10,7 @@ const handleMongooseErrors = (error: CustomErrorHandler) => {
 
   // Mongoose duplicate key
   if (error.code === 11000) {
+    console.log(error.name);
     const field = Object.keys(error.keyValue)[0];
     error.message = `${field} is already registered`;
     error.statusCode = 409;
@@ -24,6 +25,13 @@ const handleMongooseErrors = (error: CustomErrorHandler) => {
     });
     error.message = message;
     error.statusCode = 400;
+    return error;
+  }
+
+  // General Mongoose error
+  if (error.name === 'MongooseError') {
+    error.message = `Server Timeout`;
+    error.statusCode = 500;
     return error;
   }
 
