@@ -6,7 +6,7 @@ import protect from '../lib/middleware/auth';
 const org = new Hono();
 
 // @desc    Create org
-// *route   POST /org
+// *route   POST /orgs
 // !method  Private
 org.post('/', protect, async (c) => {
   const { name, slug } = await c.req.json();
@@ -25,7 +25,7 @@ org.post('/', protect, async (c) => {
 });
 
 // @desc    Get all orgs
-// *route   GET /org
+// *route   GET /orgs
 // !method  Private
 org.get('/', protect, async (c) => {
   const org = await Org.find();
@@ -37,7 +37,7 @@ org.get('/', protect, async (c) => {
 });
 
 // @desc    Get org by slug
-// *route   GET /org/:slug
+// *route   GET /orgs/:slug
 // ?method  Public
 org.get('/:slug', async (c) => {
   const slug = c.req.param('slug');
@@ -55,7 +55,7 @@ org.get('/:slug', async (c) => {
 });
 
 // @desc    Update org by slug
-// *route   PUT /org/:slug
+// *route   PUT /orgs/:slug
 // !method  Private
 org.put('/:slug', protect, async (c) => {
   const slug = c.req.param('slug');
@@ -77,7 +77,7 @@ org.put('/:slug', protect, async (c) => {
 });
 
 // @desc    Delete org by slug
-// *route   DELETE /org/:slug
+// *route   DELETE /orgs/:slug
 // !method  Private
 org.delete('/:slug', protect, async (c) => {
   const slug = c.req.param('slug');
