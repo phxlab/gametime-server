@@ -1,20 +1,16 @@
 import { Context, Hono } from 'hono';
-import { ErrorResponse } from 'hono-error-handler';
 import { Org, Store } from '../models';
 import protect from '../lib/middleware/auth';
+import validateOrg from '../lib/middleware/validateOrg';
+import { ErrorResponse } from 'hono-error-handler';
 
 const stores = new Hono();
 
 // @desc    Create store
-// *route   POST /org/:orgSlug/stores
+// *route   POST /orgs/:orgSlug/stores
 // !method  Private
-stores.post('/', protect, async (c: Context) => {
-  const orgSlug = c.req.param('orgSlug');
-  const org = await Org.findOne({ slug: orgSlug });
-
-  if (!org) {
-    throw new ErrorResponse('Organization does not exist', 404);
-  }
+stores.post('/', protect, validateOrg, async (c: Context) => {
+  const orgId = c.get('org');
 
   const { name, slug, color } = await c.req.json();
 
@@ -22,7 +18,7 @@ stores.post('/', protect, async (c: Context) => {
     name,
     slug: slug?.toLowerCase(),
     color,
-    org,
+    org: orgId,
   });
 
   return c.json({
@@ -32,7 +28,7 @@ stores.post('/', protect, async (c: Context) => {
 });
 
 // @desc    Get all stores
-// *route   GET /org/:orgSlug/stores
+// *route   GET /orgs/:orgSlug/stores
 // ?method  Public
 stores.get('/', async (c: Context) => {
   const orgSlug = c.req.param('orgSlug');
@@ -42,6 +38,11 @@ stores.get('/', async (c: Context) => {
     select: 'name slug color -org -_id',
   });
 
+  // Checks if org exists not if there is any stores
+  if (!stores) {
+    throw new ErrorResponse('Organization not found', 404);
+  }
+
   return c.json({
     success: true,
     data: stores,
@@ -49,16 +50,17 @@ stores.get('/', async (c: Context) => {
 });
 
 // @desc    Get single store
-// *route   GET /org/:orgSlug/stores/:storeSlug
+// *route   GET /orgs/:orgSlug/stores/:storeSlug
 // ?method  Public
-stores.get('/:storeSlug', async (c: Context) => {
-  const orgSlug = c.req.param('orgSlug');
+stores.get('/:storeSlug', validateOrg, async (c: Context) => {
+  const orgId = c.get('org');
   const storeSlug = c.req.param('storeSlug');
 
-  const store = await Org.findOne({ slug: orgSlug }).populate({
-    path: 'store',
-    select: 'name slug color -org -_id',
-  });
+  const store = await Store.findOne({ slug: storeSlug, org: orgId });
+
+  if (!store) {
+    throw new ErrorResponse('Store not found', 404);
+  }
 
   return c.json({
     success: true,
