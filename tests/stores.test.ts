@@ -74,3 +74,50 @@ describe('Create store', () => {
     expect(res.body.success).toBeTruthy();
   });
 });
+
+describe('Get all stores', () => {
+  test('with invalid org - 404', async () => {
+    const res = await request.get('/invalid/stores');
+
+    expect(res.status).toBe(404);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with success - 200', async () => {
+    const res = await request.get('/ths/stores');
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+    expect(res.body.data.stores).toBeArray();
+  });
+});
+
+describe('Get single store', () => {
+  test('with invalid org - 404', async () => {
+    const res = await request.get('/invalid/stores/football');
+
+    expect(res.status).toBe(404);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with invalid store - 404', async () => {
+    const res = await request.get('/ehs/stores/hockey');
+
+    expect(res.status).toBe(404);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with store from different org - 404', async () => {
+    const res = await request.get('/ths/stores/baseball');
+
+    expect(res.status).toBe(404);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with success - 200', async () => {
+    const res = await request.get('/ehs/stores/football');
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
+});
