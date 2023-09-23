@@ -4,7 +4,7 @@ import { errorHandler } from 'hono-error-handler';
 import dbConnect from './lib/config/db';
 import protect from './lib/middleware/auth';
 import errorHandlers from './lib/errors';
-import { auth, orgs, stores, users } from './routes';
+import { auth, orgs, stores, users, waves } from './routes';
 
 (async () => {
   await dbConnect();
@@ -25,6 +25,7 @@ app.use('/users/*', protect);
 app.route('/users', users);
 app.route('/orgs', orgs);
 app.route('/orgs/:orgSlug/stores', stores);
+app.route('/orgs/:orgSlug/stores/:storeSlug/waves', waves);
 app.onError(errorHandler(errorHandlers));
 
 // noinspection JSUnusedGlobalSymbols
