@@ -1,7 +1,7 @@
-import { Document, Schema, model } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
 import { ErrorResponse } from 'hono-error-handler';
 
-interface StoreDocument extends Document {
+export interface StoreDocument extends Document {
   name: string;
   slug: string;
   waves: {
