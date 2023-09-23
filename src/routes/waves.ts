@@ -1,6 +1,7 @@
-import { Hono } from 'hono';
+import { Context, Hono } from 'hono';
 import protect from '../lib/middleware/auth';
 import { Wave } from '../models';
+import validateStore from '../lib/middleware/validateStore';
 
 const waves = new Hono();
 
@@ -21,13 +22,26 @@ waves.post('/', protect, async (c) => {
       success: true,
       data: wave,
     },
-    200,
+    201,
   );
 });
 
 // @desc    Get waves
 // *route   GET /orgs/:orgSlug/stores/:storeSlug/waves
 // !method  Private
+waves.get('/', validateStore, async (c: Context) => {
+  const storeId = c.get('store');
+
+  const wave = await Wave.find({ store: storeId });
+
+  return c.json(
+    {
+      success: true,
+      data: wave,
+    },
+    200,
+  );
+});
 
 // @desc    Update waves
 // *route   PUT /orgs/:orgSlug/stores/:storeSlug/waves
@@ -36,3 +50,5 @@ waves.post('/', protect, async (c) => {
 // @desc    Delete wave
 // *route   DELETE /orgs/:orgSlug/stores/:storeSlug/waves/:waveId
 // !method  Private
+
+export default waves;
