@@ -1,10 +1,11 @@
-import { Schema, model } from 'mongoose';
-export interface OrgModelDocument {
+import { Document, model, Schema } from 'mongoose';
+
+export interface OrgDocument extends Document {
   name: string;
   slug: string;
 }
 
-const Org = new Schema<OrgModelDocument>(
+const Org = new Schema<OrgDocument>(
   {
     name: {
       type: String,
