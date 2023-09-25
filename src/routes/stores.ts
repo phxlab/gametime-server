@@ -68,4 +68,32 @@ stores.get('/:storeSlug', validateOrg, async (c: Context) => {
   });
 });
 
+// @desc    Update store
+// *route   PUT /orgs/:orgSlug/stores/:storeSlug
+// !method  Private
+stores.put('/:storeSlug', protect, validateOrg, async (c: Context) => {
+  const storeSlug = c.req.param('storeSlug');
+  const orgId = c.get('org');
+  const { name, slug, color } = await c.req.json();
+  const store = await Store.findOne({ slug: storeSlug, org: orgId });
+
+  if (!store) {
+    throw new ErrorResponse('Store not found', 404);
+  }
+
+  store.name = name || store.name;
+  store.slug = slug || store.slug;
+  store.color = color || store.color;
+
+  await store.save();
+
+  return c.json(
+    {
+      success: true,
+      data: store,
+    },
+    200,
+  );
+});
+
 export default stores;
