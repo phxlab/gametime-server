@@ -46,7 +46,7 @@ Store.pre('save', async function (next) {
     org: this.org,
   });
 
-  if (existingStore) {
+  if (existingStore && this.id !== existingStore.id) {
     next(new ErrorResponse('slug is already registered', 409));
   }
 
