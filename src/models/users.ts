@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { model, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import * as jose from 'jose';
 
