@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "bun run --hot src/app.ts",
+    "dev": "bun run --hot src/index.ts",
     "test": "bun test --watch"
   },
   "dependencies": {
