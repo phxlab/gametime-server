@@ -121,3 +121,48 @@ describe('Get single store', () => {
     expect(res.body.success).toBeTruthy();
   });
 });
+
+describe('Update single store', () => {
+  test('with no auth - 401', async () => {
+    const res = await request.put('/ths/stores/football');
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with invalid store - 404', async () => {
+    const res = await request
+      .put('/ths/stores/invalid')
+      .send({})
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(404);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with existing store slug - 409', async () => {
+    const res = await request
+      .put('/ehs/stores/football')
+      .send({
+        slug: 'baseball',
+      })
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(409);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with success - 200', async () => {
+    const res = await request
+      .put('/ehs/stores/football')
+      .send({
+        name: 'Football Store',
+        slug: 'football1',
+        color: 'red',
+      })
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
+});
