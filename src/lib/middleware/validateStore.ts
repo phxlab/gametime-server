@@ -1,22 +1,33 @@
 import { middleware } from 'hono/factory';
 import { ErrorResponse } from 'hono-error-handler';
-import { Store } from '../../models';
-import { OrgDocument } from '../../models/orgs';
+import { Org, Store } from '../../models';
 
-const validateStore = middleware(async (c, next) => {
+const validateStore = middleware<{
+  Variables: {
+    store: string;
+    org: string;
+  };
+}>(async (c, next) => {
   const orgSlug = c.req.param('orgSlug');
   const storeSlug = c.req.param('storeSlug');
 
+  const org = await Org.findOne({ slug: orgSlug });
+
+  if (!org) {
+    throw new ErrorResponse('Organization not found', 404);
+  }
+
   const store = await Store.findOne({
     slug: storeSlug,
-  }).populate<{ org: OrgDocument }>('org');
+    org: org.id,
+  });
 
-  if (!store || orgSlug !== store?.org.slug) {
-    throw new ErrorResponse('Store does not exist', 404);
+  if (!store) {
+    throw new ErrorResponse('Store not found', 404);
   }
 
   c.set('store', store.id);
-  c.set('org', store.org.id);
+  c.set('org', org.id);
 
   await next();
 });
