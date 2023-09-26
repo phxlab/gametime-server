@@ -11,8 +11,8 @@ const org = new Hono();
 org.post('/', protect, async (c) => {
   const { name, slug } = await c.req.json();
   const data = await Org.create({
-    name: name?.toLowerCase(),
-    slug,
+    name,
+    slug: slug?.toLowerCase(),
   });
 
   return c.json(
