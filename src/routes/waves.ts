@@ -1,20 +1,29 @@
-import { Context, Hono } from 'hono';
+import { Hono } from 'hono';
 import protect from '../lib/middleware/auth';
 import { Wave } from '../models';
 import validateStore from '../lib/middleware/validateStore';
+import { ErrorResponse } from 'hono-error-handler';
 
 const waves = new Hono();
 
 // @desc    Create wave
 // *route   POST /orgs/:orgSlug/stores/:storeSlug/waves
 // !method  Private
-waves.post('/', protect, async (c) => {
+waves.post('/', protect, validateStore, async (c) => {
+  const storeId = c.get('store');
   const { name, open, close } = await c.req.json();
+
+  const openWave = await Wave.findOne({ isActive: true });
+
+  if (openWave) {
+    throw new ErrorResponse('There can only be one active wave at a time', 409);
+  }
 
   const wave = await Wave.create({
     name,
     open,
     close,
+    store: storeId,
   });
 
   return c.json(
@@ -29,26 +38,18 @@ waves.post('/', protect, async (c) => {
 // @desc    Get waves
 // *route   GET /orgs/:orgSlug/stores/:storeSlug/waves
 // !method  Private
-waves.get('/', validateStore, async (c: Context) => {
+waves.get('/', validateStore, async (c) => {
   const storeId = c.get('store');
 
-  const wave = await Wave.find({ store: storeId });
+  const waves = await Wave.find({ store: storeId });
 
   return c.json(
     {
       success: true,
-      data: wave,
+      data: waves,
     },
     200,
   );
 });
-
-// @desc    Update waves
-// *route   PUT /orgs/:orgSlug/stores/:storeSlug/waves
-// !method  Private
-
-// @desc    Delete wave
-// *route   DELETE /orgs/:orgSlug/stores/:storeSlug/waves/:waveId
-// !method  Private
 
 export default waves;
