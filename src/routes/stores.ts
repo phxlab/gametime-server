@@ -30,10 +30,10 @@ stores.post('/', protect, validateOrg, async (c) => {
 // @desc    Get all stores
 // *route   GET /orgs/:orgSlug/stores
 // ?method  Public
-stores.get('/:orgSlug/stores', async (c) => {
-  const orgSlug = c.req.param('orgSlug');
+stores.get('/', validateOrg, async (c) => {
+  const orgId = c.get('org');
 
-  const stores = await Org.findOne({ slug: orgSlug }).populate({
+  const stores = await Org.findById(orgId).populate({
     path: 'stores',
     select: 'name slug color -org -_id',
     match: { archived: false },
