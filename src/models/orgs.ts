@@ -23,7 +23,7 @@ const Org = new Schema<OrgDocument>(
     },
   },
   {
-    toJSON: { virtuals: true },
+    toJSON: { virtuals: true, versionKey: false },
     toObject: { virtuals: true },
   },
 );
@@ -33,13 +33,6 @@ Org.virtual('stores', {
   localField: '_id',
   foreignField: 'org',
   justOne: false,
-});
-
-Org.virtual('store', {
-  ref: 'Store',
-  localField: '_id',
-  foreignField: 'org',
-  justOne: true,
 });
 
 export default model('Org', Org);
