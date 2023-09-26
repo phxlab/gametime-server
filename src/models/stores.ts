@@ -4,11 +4,8 @@ import { ErrorResponse } from 'hono-error-handler';
 export interface StoreDocument extends Document {
   name: string;
   slug: string;
-  waves: {
-    open: string;
-    close: string;
-  }[];
   color: string;
+  archived: boolean;
   org: Schema.Types.ObjectId;
 }
 
@@ -31,6 +28,10 @@ const Store = new Schema<StoreDocument>({
   color: {
     type: String,
     required: [true, 'Color is required.'],
+  },
+  archived: {
+    type: Boolean,
+    default: false,
   },
   org: {
     type: Schema.Types.ObjectId,
