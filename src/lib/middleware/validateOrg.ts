@@ -2,7 +2,11 @@ import { middleware } from 'hono/factory';
 import { ErrorResponse } from 'hono-error-handler';
 import { Org } from '../../models';
 
-const validateOrg = middleware(async (c, next) => {
+const validateOrg = middleware<{
+  Variables: {
+    org: string;
+  };
+}>(async (c, next) => {
   const orgSlug = c.req.param('orgSlug');
   const org = await Org.findOne({ slug: orgSlug });
 

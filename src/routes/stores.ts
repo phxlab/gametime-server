@@ -1,4 +1,4 @@
-import { Context, Hono } from 'hono';
+import { Hono } from 'hono';
 import { Org, Store } from '../models';
 import protect from '../lib/middleware/auth';
 import validateOrg from '../lib/middleware/validateOrg';
@@ -9,7 +9,7 @@ const stores = new Hono();
 // @desc    Create store
 // *route   POST /orgs/:orgSlug/stores
 // !method  Private
-stores.post('/', protect, validateOrg, async (c: Context) => {
+stores.post('/', protect, validateOrg, async (c) => {
   const orgId = c.get('org');
 
   const { name, slug, color } = await c.req.json();
@@ -30,7 +30,7 @@ stores.post('/', protect, validateOrg, async (c: Context) => {
 // @desc    Get all stores
 // *route   GET /orgs/:orgSlug/stores
 // ?method  Public
-stores.get('/', async (c: Context) => {
+stores.get('/:orgSlug/stores', async (c) => {
   const orgSlug = c.req.param('orgSlug');
 
   const stores = await Org.findOne({ slug: orgSlug }).populate({
@@ -53,7 +53,7 @@ stores.get('/', async (c: Context) => {
 // @desc    Get single store
 // *route   GET /orgs/:orgSlug/stores/:storeSlug
 // ?method  Public
-stores.get('/:storeSlug', validateOrg, async (c: Context) => {
+stores.get('/:storeSlug', validateOrg, async (c) => {
   const orgId = c.get('org');
   const storeSlug = c.req.param('storeSlug');
 
@@ -72,7 +72,7 @@ stores.get('/:storeSlug', validateOrg, async (c: Context) => {
 // @desc    Update store
 // *route   PUT /orgs/:orgSlug/stores/:storeSlug
 // !method  Private
-stores.put('/:storeSlug', protect, validateOrg, async (c: Context) => {
+stores.put('/:storeSlug', protect, validateOrg, async (c) => {
   const storeSlug = c.req.param('storeSlug');
   const orgId = c.get('org');
   const { name, slug, color } = await c.req.json();
@@ -100,7 +100,7 @@ stores.put('/:storeSlug', protect, validateOrg, async (c: Context) => {
 // @desc    Archive store
 // *route   DELETE /orgs/:orgSlug/stores/:storeSlug
 // !method  Private
-stores.delete('/:storeSlug', protect, validateOrg, async (c: Context) => {
+stores.delete('/:storeSlug', protect, validateOrg, async (c) => {
   const storeSlug = c.req.param('storeSlug');
   const orgId = c.get('org');
 

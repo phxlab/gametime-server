@@ -3,7 +3,11 @@ import * as jose from 'jose';
 import { ErrorResponse } from 'hono-error-handler';
 import { User } from '../../models';
 
-const protect = middleware(async (c, next) => {
+const protect = middleware<{
+  Variables: {
+    user: string;
+  };
+}>(async (c, next) => {
   let token = c.req.header('Authorization');
 
   if (!token || !token.startsWith('Bearer')) {
@@ -22,7 +26,7 @@ const protect = middleware(async (c, next) => {
 
     user = User.findById(payload.id).lean();
 
-    c.set('user', payload.id);
+    c.set('user', payload.id as string);
   } catch (error) {
     throw new ErrorResponse('Not authorized', 401);
   }

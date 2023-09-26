@@ -1,4 +1,4 @@
-import { Context, Hono } from 'hono';
+import { Hono } from 'hono';
 import { ErrorResponse } from 'hono-error-handler';
 import { User } from '../models';
 import protect from '../lib/middleware/auth';
@@ -45,7 +45,7 @@ auth.post('/login', async (c) => {
 // @desc    Get current user
 // *route   GET /auth/me
 // !method  Private
-auth.get('/me', protect, async (c: Context) => {
+auth.get('/me', protect, async (c) => {
   const userId = c.get('user');
 
   const user = await User.findById(userId);
