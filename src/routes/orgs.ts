@@ -8,7 +8,7 @@ const org = new Hono();
 // @desc    Create org
 // *route   POST /orgs
 // !method  Private
-org.post('/', protect, async (c) => {
+org.post('/', protect(), async (c) => {
   const { name, slug } = await c.req.json();
   const data = await Org.create({
     name,
@@ -27,7 +27,7 @@ org.post('/', protect, async (c) => {
 // @desc    Get all orgs
 // *route   GET /orgs
 // !method  Private
-org.get('/', protect, async (c) => {
+org.get('/', protect(), async (c) => {
   const org = await Org.find();
 
   return c.json({
@@ -57,7 +57,7 @@ org.get('/:slug', async (c) => {
 // @desc    Update org by slug
 // *route   PUT /orgs/:slug
 // !method  Private
-org.put('/:slug', protect, async (c) => {
+org.put('/:slug', protect(), async (c) => {
   const slug = c.req.param('slug');
   const data = await c.req.json();
 
@@ -79,7 +79,7 @@ org.put('/:slug', protect, async (c) => {
 // @desc    Delete org by slug
 // *route   DELETE /orgs/:slug
 // !method  Private
-org.delete('/:slug', protect, async (c) => {
+org.delete('/:slug', protect(), async (c) => {
   const slug = c.req.param('slug');
 
   const org = await Org.findOneAndDelete({ slug });

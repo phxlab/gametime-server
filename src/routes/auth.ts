@@ -45,7 +45,7 @@ auth.post('/login', async (c) => {
 // @desc    Get current user
 // *route   GET /auth/me
 // !method  Private
-auth.get('/me', protect, async (c) => {
+auth.get('/me', protect(), async (c) => {
   const userId = c.get('user');
 
   const user = await User.findById(userId);
