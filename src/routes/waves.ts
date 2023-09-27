@@ -9,7 +9,7 @@ const waves = new Hono();
 // @desc    Create wave
 // *route   POST /orgs/:orgSlug/stores/:storeSlug/waves
 // !method  Private
-waves.post('/', protect, validateStore, async (c) => {
+waves.post('/', protect(), validateStore, async (c) => {
   const storeId = c.get('store');
   const { name, open, close } = await c.req.json();
 
@@ -38,7 +38,7 @@ waves.post('/', protect, validateStore, async (c) => {
 // @desc    Get waves
 // *route   GET /orgs/:orgSlug/stores/:storeSlug/waves
 // !method  Private
-waves.get('/', validateStore, async (c) => {
+waves.get('/', validateStore, protect(), async (c) => {
   const storeId = c.get('store');
 
   const waves = await Wave.find({ store: storeId });
