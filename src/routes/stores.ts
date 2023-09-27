@@ -9,7 +9,7 @@ const stores = new Hono();
 // @desc    Create store
 // *route   POST /orgs/:orgSlug/stores
 // !method  Private
-stores.post('/', protect, validateOrg, async (c) => {
+stores.post('/', protect(), validateOrg, async (c) => {
   const orgId = c.get('org');
 
   const { name, slug, color } = await c.req.json();
@@ -53,14 +53,42 @@ stores.get('/', validateOrg, async (c) => {
 // @desc    Get single store
 // *route   GET /orgs/:orgSlug/stores/:storeSlug
 // ?method  Public
-stores.get('/:storeSlug', validateOrg, async (c) => {
+stores.get('/:storeSlug', protect(true), validateOrg, async (c) => {
   const orgId = c.get('org');
   const storeSlug = c.req.param('storeSlug');
+  const user = c.get('user');
 
-  const store = await Store.findOne({ slug: storeSlug, org: orgId });
+  const store = await Store.findOne({
+    slug: storeSlug,
+    org: orgId,
+    archived: false,
+  }).populate({
+    path: 'wave',
+    match: { isActive: true },
+  });
 
   if (!store) {
     throw new ErrorResponse('Store not found', 404);
+  }
+
+  if (!store.wave && !user) {
+    throw new ErrorResponse('Store is closed', 403);
+  }
+
+  if (!user && store.wave) {
+    if (store.wave.open > new Date()) {
+      return c.json(
+        {
+          success: false,
+          open: store.wave.open,
+        },
+        202,
+      );
+    }
+
+    if (store.wave.close < new Date()) {
+      throw new ErrorResponse('Store is closed', 403);
+    }
   }
 
   return c.json({
@@ -72,7 +100,7 @@ stores.get('/:storeSlug', validateOrg, async (c) => {
 // @desc    Update store
 // *route   PUT /orgs/:orgSlug/stores/:storeSlug
 // !method  Private
-stores.put('/:storeSlug', protect, validateOrg, async (c) => {
+stores.put('/:storeSlug', protect(), validateOrg, async (c) => {
   const storeSlug = c.req.param('storeSlug');
   const orgId = c.get('org');
   const { name, slug, color } = await c.req.json();
@@ -100,7 +128,7 @@ stores.put('/:storeSlug', protect, validateOrg, async (c) => {
 // @desc    Archive store
 // *route   DELETE /orgs/:orgSlug/stores/:storeSlug
 // !method  Private
-stores.delete('/:storeSlug', protect, validateOrg, async (c) => {
+stores.delete('/:storeSlug', protect(), validateOrg, async (c) => {
   const storeSlug = c.req.param('storeSlug');
   const orgId = c.get('org');
 
