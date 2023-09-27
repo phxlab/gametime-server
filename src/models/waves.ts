@@ -1,6 +1,14 @@
 import { model, Schema } from 'mongoose';
 
-const Wave = new Schema(
+export interface WaveDocument {
+  name: string;
+  open: Date;
+  close: Date;
+  isActive: boolean;
+  store: Schema.Types.ObjectId;
+}
+
+const Wave = new Schema<WaveDocument>(
   {
     name: {
       type: String,
