@@ -3,39 +3,44 @@ import * as jose from 'jose';
 import { ErrorResponse } from 'hono-error-handler';
 import { User } from '../../models';
 
-const protect = middleware<{
-  Variables: {
-    user: string;
-  };
-}>(async (c, next) => {
-  let token = c.req.header('Authorization');
+const protect = (optional = false) =>
+  middleware<{
+    Variables: {
+      user: string;
+    };
+  }>(async (c, next) => {
+    let token = c.req.header('Authorization');
 
-  if (!token || !token.startsWith('Bearer')) {
-    throw new ErrorResponse('Not authorized', 401);
-  }
+    if (!token && optional) {
+      return await next();
+    }
 
-  token = token.split(' ')[1];
+    if (!token || !token.startsWith('Bearer')) {
+      throw new ErrorResponse('Not authorized', 401);
+    }
 
-  const encoder = new TextEncoder();
-  const JWT_SECRET = encoder.encode(Bun.env.JWT_SECRET);
+    token = token.split(' ')[1];
 
-  let user;
+    const encoder = new TextEncoder();
+    const JWT_SECRET = encoder.encode(Bun.env.JWT_SECRET);
 
-  try {
-    const { payload } = await jose.jwtVerify(token, JWT_SECRET);
+    let user;
 
-    user = User.findById(payload.id).lean();
+    try {
+      const { payload } = await jose.jwtVerify(token, JWT_SECRET);
 
-    c.set('user', payload.id as string);
-  } catch (error) {
-    throw new ErrorResponse('Not authorized', 401);
-  }
+      user = User.findById(payload.id).lean();
 
-  if (!user) {
-    throw new ErrorResponse('Not authorized', 401);
-  }
+      c.set('user', payload.id as string);
+    } catch (error) {
+      throw new ErrorResponse('Not authorized', 401);
+    }
 
-  await next();
-});
+    if (!user) {
+      throw new ErrorResponse('Not authorized', 401);
+    }
+
+    await next();
+  });
 
 export default protect;
