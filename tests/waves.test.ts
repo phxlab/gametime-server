@@ -57,3 +57,28 @@ describe('Create wave', () => {
     expect(res.body.success).toBeTruthy();
   });
 });
+
+describe('Get waves', () => {
+  test('with no auth - 401', async () => {
+    const res = await request.get('/ths/stores/football/waves');
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with invalid store - 404', async () => {
+    const res = await request.get('/ths/stores/invalid/waves');
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with success - 200', async () => {
+    const res = await request
+      .get('/ths/stores/football/waves')
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
+});
