@@ -13,7 +13,7 @@ waves.post('/', protect(), validateStore, async (c) => {
   const storeId = c.get('store');
   const { name, open, close } = await c.req.json();
 
-  const openWave = await Wave.findOne({ isActive: true });
+  const openWave = await Wave.findOne({ store: storeId, isActive: true });
 
   if (openWave) {
     throw new ErrorResponse('There can only be one active wave at a time', 409);
