@@ -109,10 +109,17 @@ stores.delete('/:storeSlug', protect(), validateOrg, async (c) => {
   const storeSlug = c.req.param('storeSlug');
   const orgId = c.get('org');
 
-  const store = await Store.findOne({ slug: storeSlug, org: orgId });
+  const store = await Store.findOne({ slug: storeSlug, org: orgId }).populate({
+    path: 'wave',
+    match: { isActive: true },
+  });
 
   if (!store) {
     throw new ErrorResponse('Store not found', 404);
+  }
+
+  if (store.wave) {
+    throw new ErrorResponse('Cannot archive active store', 409);
   }
 
   store.archived = true;
