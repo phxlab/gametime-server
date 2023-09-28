@@ -233,6 +233,8 @@ describe('Archive store', () => {
     expect(res.body.success).toBeFalsy();
   });
 
+  test.todo('with open active wave');
+
   test('with success - 200', async () => {
     const res = await request
       .delete('/ths/stores/wave')
