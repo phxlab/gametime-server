@@ -114,8 +114,57 @@ describe('Get single store', () => {
     expect(res.body.success).toBeFalsy();
   });
 
+  test('with no wave - 403', async () => {
+    const res = await request.get('/ths/stores/wave');
+
+    expect(res.status).toBe(403);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with not open wave - 202', async () => {
+    const res = await request.get('/ths/stores/opening');
+
+    expect(res.status).toBe(202);
+    expect(res.body.success).toBeFalsy();
+    expect(res.body.open).toBeDefined();
+  });
+
+  test('with closed wave - 403', async () => {
+    const res = await request.get('/ths/stores/closed');
+
+    expect(res.status).toBe(403);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with no wave with auth - 200', async () => {
+    const res = await request
+      .get('/ths/stores/wave')
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
+
+  test('with not open wave with auth - 200', async () => {
+    const res = await request
+      .get('/ths/stores/opening')
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
+
+  test('with closed wave with auth - 200', async () => {
+    const res = await request
+      .get('/ths/stores/closed')
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
+
   test('with success - 200', async () => {
-    const res = await request.get('/ehs/stores/football');
+    const res = await request.get('/ths/stores/football');
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBeTruthy();
