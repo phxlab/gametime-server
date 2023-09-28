@@ -21,8 +21,8 @@ waves.post('/', protect(), validateStore, async (c) => {
 
   const wave = await Wave.create({
     name,
-    open,
-    close,
+    open: new Date(open),
+    close: new Date(close),
     store: storeId,
   });
 
@@ -38,7 +38,7 @@ waves.post('/', protect(), validateStore, async (c) => {
 // @desc    Get waves
 // *route   GET /orgs/:orgSlug/stores/:storeSlug/waves
 // !method  Private
-waves.get('/', validateStore, protect(), async (c) => {
+waves.get('/', protect(), validateStore, async (c) => {
   const storeId = c.get('store');
 
   const waves = await Wave.find({ store: storeId });
