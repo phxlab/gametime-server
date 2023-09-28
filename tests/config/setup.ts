@@ -1,7 +1,7 @@
 import { beforeAll } from 'bun:test';
 import { closeMongoose, startMongoose } from './db';
-import { Org, Store, User } from '../../src/models';
-import { orgs, stores } from './data';
+import { Org, Store, User, Wave } from '../../src/models';
+import { orgs, stores, users, waves } from './data';
 
 beforeAll(async () => {
   await startMongoose();
@@ -10,16 +10,13 @@ beforeAll(async () => {
   await Org.deleteMany();
   await Store.deleteMany();
 
-  const user = await User.create({
-    name: 'John Doe',
-    email: 'jdoe@gmail.com',
-    username: 'john',
-    password: 'password',
-  });
+  const user = await User.create(users);
 
   await Org.create(orgs);
 
   await Store.create(stores);
+
+  await Wave.create(waves);
 
   global.__token = await user.getToken();
 
