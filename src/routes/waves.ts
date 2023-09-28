@@ -52,4 +52,43 @@ waves.get('/', protect(), validateStore, async (c) => {
   );
 });
 
+// @desc    Update Active
+// *route   PUT /orgs/:orgSlug/stores/:storeSlug/waves
+// !method  Private
+waves.put('/', protect(), validateStore, async (c) => {
+  const storeId = c.get('store');
+  const { name, open, close } = await c.req.json();
+  let openDate, closeDate;
+
+  const wave = await Wave.findOne({ store: storeId, isActive: true });
+
+  if (!wave) {
+    throw new ErrorResponse('No active wave found', 404);
+  }
+
+  if (open) {
+    openDate = new Date(open);
+  }
+
+  if (close) {
+    closeDate = new Date(close);
+  }
+
+  wave.name = name || wave.name;
+  wave.open = openDate || wave.open;
+  wave.close = closeDate || wave.close;
+
+  await wave.save();
+
+  return c.json(
+    {
+      success: true,
+      data: wave,
+    },
+    200,
+  );
+});
+
+// Todo: Finalize store - check date, orders, clear carts
+
 export default waves;
