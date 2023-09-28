@@ -215,3 +215,30 @@ describe('Update single store', () => {
     expect(res.body.success).toBeTruthy();
   });
 });
+
+describe('Archive store', () => {
+  test('with no auth - 401', async () => {
+    const res = await request.delete('/ths/stores/invalid');
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with invalid store - 404', async () => {
+    const res = await request
+      .delete('/ths/stores/invalid')
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(404);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with success - 200', async () => {
+    const res = await request
+      .delete('/ths/stores/wave')
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
+});
