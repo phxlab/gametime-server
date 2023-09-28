@@ -3,6 +3,7 @@ import { Org, Store } from '../models';
 import protect from '../lib/middleware/auth';
 import validateOrg from '../lib/middleware/validateOrg';
 import { ErrorResponse } from 'hono-error-handler';
+import validateStore from '../lib/middleware/validateStore';
 
 const stores = new Hono();
 
@@ -53,7 +54,7 @@ stores.get('/', validateOrg, async (c) => {
 // @desc    Get single store
 // *route   GET /orgs/:orgSlug/stores/:storeSlug
 // ?method  Public
-stores.get('/:storeSlug', protect(true), validateOrg, async (c) => {
+stores.get('/:storeSlug', protect(true), validateStore, async (c) => {
   const orgId = c.get('org');
   const storeSlug = c.req.param('storeSlug');
   const user = c.get('user');
@@ -66,30 +67,6 @@ stores.get('/:storeSlug', protect(true), validateOrg, async (c) => {
     path: 'wave',
     match: { isActive: true },
   });
-
-  if (!store) {
-    throw new ErrorResponse('Store not found', 404);
-  }
-
-  if (!store.wave && !user) {
-    throw new ErrorResponse('Store is closed', 403);
-  }
-
-  if (!user && store.wave) {
-    if (store.wave.open > new Date()) {
-      return c.json(
-        {
-          success: false,
-          open: store.wave.open,
-        },
-        202,
-      );
-    }
-
-    if (store.wave.close < new Date()) {
-      throw new ErrorResponse('Store is closed', 403);
-    }
-  }
 
   return c.json({
     success: true,
