@@ -82,3 +82,44 @@ describe('Get waves', () => {
     expect(res.body.success).toBeTruthy();
   });
 });
+
+describe('Update active wave', () => {
+  test('with no auth - 401', async () => {
+    const res = await request.put('/ths/stores/football/waves');
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with no active wave - 404', async () => {
+    const res = await request
+      .put('/ths/stores/nowave/waves')
+      .send({})
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(404);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with no data - 200', async () => {
+    const res = await request
+      .put('/ths/stores/football/waves')
+      .send({})
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
+
+  test('with success - 200', async () => {
+    const res = await request
+      .put('/ths/stores/football/waves')
+      .send({
+        name: 'New Name For Football',
+      })
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
+});
