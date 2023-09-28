@@ -233,7 +233,14 @@ describe('Archive store', () => {
     expect(res.body.success).toBeFalsy();
   });
 
-  test.todo('with open active wave');
+  test('with open active wave', async () => {
+    const res = await request
+      .delete('/ths/stores/football')
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(409);
+    expect(res.body.success).toBeFalsy();
+  });
 
   test('with success - 200', async () => {
     const res = await request
