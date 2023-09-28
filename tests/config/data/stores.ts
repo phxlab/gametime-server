@@ -23,8 +23,14 @@ const stores = [
     org: id.org.ths,
   },
   {
-    name: 'No Wave',
+    name: 'No Wave - will be made',
     slug: 'wave',
+    color: 'blue',
+    org: id.org.ths,
+  },
+  {
+    name: 'No wave ever',
+    slug: 'nowave',
     color: 'blue',
     org: id.org.ths,
   },
