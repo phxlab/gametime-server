@@ -1,6 +1,8 @@
+import id from './id';
+
 const orgs = [
   {
-    id: '000000000000000000000001',
+    id: id.org.ths,
     name: 'Test High School',
     slug: 'ths',
   },
