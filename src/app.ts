@@ -16,7 +16,7 @@ app.get('/', (c) =>
 );
 
 app.route('/auth', auth);
-app.use('/users/*', protect);
+app.use('/users/*', protect());
 app.route('/users', users);
 app.route('/orgs', orgs);
 app.route('/orgs/:orgSlug/stores', stores);
