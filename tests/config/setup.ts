@@ -9,6 +9,7 @@ beforeAll(async () => {
   await User.deleteMany();
   await Org.deleteMany();
   await Store.deleteMany();
+  await Wave.deleteMany();
 
   const user = await User.create(users);
 
