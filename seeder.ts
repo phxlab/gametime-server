@@ -23,4 +23,6 @@ if (process.argv[2] === '-d') {
     console.log('Data deleted');
     process.exit();
   });
+} else if (process.argv[2] === '-i') {
+  importData().then();
 }
