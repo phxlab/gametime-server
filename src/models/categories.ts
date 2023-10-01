@@ -22,4 +22,6 @@ const Category = new Schema<CategoryDocument>(
   },
 );
 
+// todo: Virtuals for items
+
 export default model('Category', Category);
