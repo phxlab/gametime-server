@@ -7,7 +7,7 @@ import { ErrorResponse } from 'hono-error-handler';
 const categories = new Hono();
 
 // @desc    Create category
-// *route   POST /orgs/:orgId/stores/:storeId/categories
+// *route   POST /orgs/:orgSlug/stores/:storeSlug/categories
 // !method  Private
 categories.post('/', protect(), validateStore, async (c) => {
   const { name } = await c.req.json();
@@ -28,7 +28,7 @@ categories.post('/', protect(), validateStore, async (c) => {
 });
 
 // @desc    Get all categories
-// *route   GET /orgs/:orgId/stores/:storeId/categories
+// *route   GET /orgs/:orgSlug/stores/:storeSlug/categories
 // ?method  Public
 categories.get('/', protect(true), validateStore, async (c) => {
   const storeId = c.get('store');
@@ -45,7 +45,7 @@ categories.get('/', protect(true), validateStore, async (c) => {
 });
 
 // @desc    Get category by id
-// *route   GET /orgs/:orgId/stores/:storeId/categories/:id
+// *route   GET /orgs/:orgSlug/stores/:storeSlug/categories/:id
 // ?method  Public
 categories.get('/:id', protect(true), validateStore, async (c) => {
   const categoryId = c.req.param('id');
@@ -67,7 +67,7 @@ categories.get('/:id', protect(true), validateStore, async (c) => {
 });
 
 // @desc    Update category by id
-// *route   PUT /orgs/:orgId/stores/:storeId/categories/:id
+// *route   PUT /orgs/:orgSlug/stores/:storeSlug/categories/:id
 // !method  Private
 categories.put('/:id', protect(true), validateStore, async (c) => {
   const categoryId = c.req.param('id');
@@ -93,7 +93,7 @@ categories.put('/:id', protect(true), validateStore, async (c) => {
 });
 
 // @desc    Delete category by id
-// *route   DELETE /orgs/:orgId/stores/:storeId/categories/:id
+// *route   DELETE /orgs/:orgSlug/stores/:storeSlug/categories/:id
 // !method  Private
 categories.delete('/:id', protect(true), validateStore, async (c) => {
   const categoryId = c.req.param('id');
