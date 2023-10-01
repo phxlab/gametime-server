@@ -2,7 +2,7 @@ import { Document, model, Schema } from 'mongoose';
 
 interface CategoryDocument extends Document {
   name: string;
-  item: Schema.Types.ObjectId;
+  store: Schema.Types.ObjectId;
 }
 
 const Category = new Schema<CategoryDocument>(
@@ -11,8 +11,10 @@ const Category = new Schema<CategoryDocument>(
       type: String,
       require: [true, 'Name is required'],
     },
-    item: {
+    store: {
       type: Schema.Types.ObjectId,
+      ref: 'Store',
+      required: [true, 'Store is required.'],
     },
   },
   {
