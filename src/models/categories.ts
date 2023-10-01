@@ -5,14 +5,19 @@ interface CategoryDocument extends Document {
   item: Schema.Types.ObjectId;
 }
 
-const Category = new Schema<CategoryDocument>({
-  name: {
-    type: String,
-    require: [true, 'Name is required'],
+const Category = new Schema<CategoryDocument>(
+  {
+    name: {
+      type: String,
+      require: [true, 'Name is required'],
+    },
+    item: {
+      type: Schema.Types.ObjectId,
+    },
   },
-  item: {
-    type: Schema.Types.ObjectId,
+  {
+    toJSON: { versionKey: false },
   },
-});
+);
 
 export default model('Category', Category);
