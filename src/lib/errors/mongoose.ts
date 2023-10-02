@@ -20,11 +20,14 @@ const handleMongooseErrors = (error: Error) => {
   // Mongoose validation error
   if (error.name === 'ValidationError') {
     let message = '';
+    error.statusCode = 400;
     Object.values(error.errors).map((val: any) => {
       message += `${val.message},`;
+      if (val.kind === 'Conflict') {
+        error.statusCode = 409;
+      }
     });
     error.message = message;
-    error.statusCode = 400;
     return error;
   }
 
