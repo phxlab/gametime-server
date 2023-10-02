@@ -76,7 +76,9 @@ items.get('/:itemSlug', protect(true), validateStore, async (c) => {
     archived = true;
   }
 
-  const item = await Item.findOne({ slug, archived }).select('-store');
+  const item = await Item.findOne({ slug, archived })
+    .select('-store')
+    .populate('categories');
 
   if (!item) {
     throw new ErrorResponse('Item not found', 404);
