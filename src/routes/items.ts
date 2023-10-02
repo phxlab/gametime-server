@@ -10,8 +10,16 @@ const items = new Hono();
 // *route   POST /orgs/:orgSlug/stores/:storeSlug/items
 // !method  Private
 items.post('/', protect(), validateStore, async (c) => {
-  const { name, slug, price, images, sizes, sizeChart, customizations } =
-    await c.req.json();
+  const {
+    name,
+    slug,
+    price,
+    images,
+    sizes,
+    sizeChart,
+    customizations,
+    categories,
+  } = await c.req.json();
   const storeId = c.get('store');
 
   const item = await Item.create({
@@ -22,6 +30,7 @@ items.post('/', protect(), validateStore, async (c) => {
     sizes,
     sizeChart,
     customizations,
+    categories,
     store: storeId,
   });
 
@@ -95,6 +104,7 @@ items.put('/:itemSlug', protect(true), validateStore, async (c) => {
     sizes,
     sizeChart,
     customizations,
+    categories,
     archived,
   } = await c.req.json();
 
@@ -108,6 +118,7 @@ items.put('/:itemSlug', protect(true), validateStore, async (c) => {
       sizes,
       sizeChart,
       customizations,
+      categories,
       archived,
     },
     {
