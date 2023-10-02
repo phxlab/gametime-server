@@ -17,6 +17,7 @@ interface ItemDocument extends Document {
     name: string;
     price: number;
   }[];
+  categories: Schema.Types.ObjectId[];
   archived: boolean;
   store: Schema.Types.ObjectId;
 }
@@ -62,6 +63,12 @@ const Item = new Schema<ItemDocument>(
       {
         name: String,
         price: Number,
+      },
+    ],
+    categories: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Category',
       },
     ],
     archived: {
