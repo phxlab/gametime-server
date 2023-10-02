@@ -3,7 +3,7 @@ import { logger } from 'hono/logger';
 import { errorHandler } from 'hono-error-handler';
 import protect from './lib/middleware/auth';
 import errorHandlers from './lib/errors';
-import { auth, categories, orgs, stores, users, waves } from './routes';
+import { auth, categories, items, orgs, stores, users, waves } from './routes';
 
 const app = new Hono();
 
@@ -22,10 +22,10 @@ app.route('/orgs', orgs);
 app.route('/orgs/:orgSlug/stores', stores);
 app.route('/orgs/:orgSlug/stores/:storeSlug/waves', waves);
 app.route('/orgs/:orgSlug/stores/:storeSlug/categories', categories);
+app.route('/orgs/:orgSlug/stores/:storeSlug/items', items);
 
 app.onError(
   errorHandler(errorHandlers, (err, c) => {
-    console.log(err.stack);
     return c.json(
       {
         success: false,
