@@ -3,6 +3,7 @@ import { Document, model, Schema } from 'mongoose';
 interface ItemDocument extends Document {
   name: string;
   slug: string;
+  price: number;
   images: {
     primary: boolean;
     url: string;
@@ -27,7 +28,15 @@ const Item = new Schema<ItemDocument>(
     },
     slug: {
       type: String,
+      match: [
+        /^(?!-)[a-z0-9-]+(?!-)$/,
+        'Slug must be alphanumeric and cannot start or end with a dash',
+      ],
       required: [true, 'Slug is required.'],
+    },
+    price: {
+      type: Number,
+      required: [true, 'Price is required'],
     },
     images: [
       {
@@ -64,5 +73,9 @@ const Item = new Schema<ItemDocument>(
     toJSON: { versionKey: false },
   },
 );
+
+Item.path('images').validate(function (images: string[]) {
+  return images.length > 0;
+}, 'Image is required.');
 
 export default model('Item', Item);
