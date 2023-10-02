@@ -18,10 +18,15 @@ const Category = new Schema<CategoryDocument>(
     },
   },
   {
-    toJSON: { versionKey: false },
+    toJSON: { versionKey: false, virtuals: true },
   },
 );
 
-// todo: Virtuals for items
+Category.virtual('items', {
+  ref: 'Item',
+  localField: '_id',
+  foreignField: 'categories',
+  justOne: false,
+});
 
 export default model('Category', Category);
