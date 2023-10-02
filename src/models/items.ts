@@ -8,15 +8,16 @@ interface ItemDocument extends Document {
     primary: boolean;
     url: string;
   }[];
-  sizes: {
+  sizes?: {
     name: string;
     price: number;
   }[];
   sizeChart?: string;
-  customizations: {
+  customizations?: {
     name: string;
     price: number;
   }[];
+  archived: boolean;
   store: Schema.Types.ObjectId;
 }
 
@@ -63,6 +64,10 @@ const Item = new Schema<ItemDocument>(
         price: Number,
       },
     ],
+    archived: {
+      type: Boolean,
+      default: false,
+    },
     store: {
       type: Schema.Types.ObjectId,
       ref: 'Store',
@@ -77,5 +82,20 @@ const Item = new Schema<ItemDocument>(
 Item.path('images').validate(function (images: string[]) {
   return images.length > 0;
 }, 'Image is required.');
+
+Item.path('slug').validate(
+  async function (slug) {
+    const existingItem = await model('Item').findOne({
+      slug,
+      store: this.store,
+      archived: false,
+      _id: { $ne: this._id },
+    });
+
+    return !existingItem;
+  },
+  'Slug is already registered',
+  'Conflict',
+);
 
 export default model('Item', Item);
