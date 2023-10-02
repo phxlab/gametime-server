@@ -50,8 +50,9 @@ categories.get('/', protect(true), validateStore, async (c) => {
 categories.get('/:id', protect(true), validateStore, async (c) => {
   const categoryId = c.req.param('id');
 
-  // todo Populate items
-  const category = await Category.findById(categoryId).select('-store');
+  const category = await Category.findById(categoryId)
+    .select('-store')
+    .populate('items');
 
   if (!category) {
     throw new ErrorResponse('Category not found', 404);
