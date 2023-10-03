@@ -2,8 +2,9 @@
   "compilerOptions": {
     "target": "es2017",
     "module": "esnext",
+    "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "strict": true,
-    "types": ["bun-types"],
+    "types": ["bun-types"]
   },
 }
