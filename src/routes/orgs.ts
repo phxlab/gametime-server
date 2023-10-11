@@ -28,7 +28,7 @@ org.post('/', protect(), async (c) => {
 // *route   GET /orgs
 // !method  Private
 org.get('/', protect(), async (c) => {
-  const org = await Org.find();
+  const org = await Org.find().sort({ name: 'asc' });
 
   return c.json({
     success: true,
