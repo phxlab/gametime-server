@@ -21,10 +21,10 @@ const Store = new Schema<StoreDocument>(
       unique: false,
       type: String,
       required: [true, 'Slug is required.'],
-      minlength: 4,
+      minlength: 3,
       maxlength: 25,
       match: [
-        /^[a-zA-Z][a-zA-Z0-9]*$/,
+        /^(?!-)[a-z0-9-]+(?!-)$/,
         'Slug must be alphanumeric and cannot start with a number',
       ],
     },
