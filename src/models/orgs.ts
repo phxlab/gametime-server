@@ -17,7 +17,7 @@ const Org = new Schema<OrgDocument>(
       required: [true, 'Slug is required'],
       unique: true,
       match: [
-        /^[a-zA-Z][a-zA-Z0-9]*$/,
+        /^(?!-)[a-z0-9-]+(?!-)$/,
         'Slug must be alphanumeric and cannot start with a number',
       ],
     },
