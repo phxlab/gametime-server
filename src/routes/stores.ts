@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { Org, Store } from '../models';
+import { Store } from '../models';
 import protect from '../lib/middleware/auth';
 import validateOrg from '../lib/middleware/validateOrg';
 import { ErrorResponse } from 'hono-error-handler';
@@ -34,11 +34,7 @@ stores.post('/', protect(), validateOrg, async (c) => {
 stores.get('/', validateOrg, async (c) => {
   const orgId = c.get('org');
 
-  const stores = await Org.findById(orgId).populate({
-    path: 'stores',
-    select: 'name slug color -org -_id',
-    match: { archived: false },
-  });
+  const stores = await Store.find({ org: orgId }).sort({ name: 'asc' });
 
   // Checks if org exists not if there is any stores
   if (!stores) {
@@ -57,7 +53,6 @@ stores.get('/', validateOrg, async (c) => {
 stores.get('/:storeSlug', protect(true), validateStore, async (c) => {
   const orgId = c.get('org');
   const storeSlug = c.req.param('storeSlug');
-  const user = c.get('user');
 
   const store = await Store.findOne({
     slug: storeSlug,
