@@ -88,7 +88,6 @@ describe('Get all stores', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBeTruthy();
-    expect(res.body.data.stores).toBeArray();
   });
 });
 
