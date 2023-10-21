@@ -46,7 +46,7 @@ describe('Get all categories', () => {
     expect(res.body.success).toBeTruthy();
   });
 
-  test.todo('success - 200', async () => {
+  test('success - 200', async () => {
     const res = await request.get('/orgs/ths/stores/football/categories');
 
     expect(res.status).toBe(200);
@@ -82,10 +82,44 @@ describe('Get category', () => {
 });
 
 describe('Update category', () => {
-  test.todo('with no auth - 401');
-  test.todo('with invalid id - 404');
-  test.todo('with no data - 400');
-  test.todo('success - 200');
+  test('with no auth - 401', async () => {
+    const res = await request.put(
+      `/orgs/ths/stores/football/categories/${category?.id}`,
+    );
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with invalid id - 404', async () => {
+    const res = await request
+      .put(`/orgs/ths/stores/football/categories/1`)
+      .auth(global.__token, { type: 'bearer' })
+      .send({});
+
+    expect(res.status).toBe(404);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with no data - 200', async () => {
+    const res = await request
+      .put(`/orgs/ths/stores/football/categories/${category?.id}`)
+      .auth(global.__token, { type: 'bearer' })
+      .send({});
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
+
+  test('success - 200', async () => {
+    const res = await request
+      .put(`/orgs/ths/stores/football/categories/${category?.id}`)
+      .auth(global.__token, { type: 'bearer' })
+      .send({ name: 'Updated Category' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
 });
 
 describe('Delete category', () => {
