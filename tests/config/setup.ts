@@ -1,6 +1,6 @@
 import { beforeAll } from 'bun:test';
 import { closeMongoose, startMongoose } from './db';
-import { Org, Store, User, Wave } from '../../src/models';
+import { Category, Org, Store, User, Wave } from '../../src/models';
 import { orgs, stores, users, waves } from './data';
 
 beforeAll(async () => {
@@ -10,6 +10,7 @@ beforeAll(async () => {
   await Org.deleteMany();
   await Store.deleteMany();
   await Wave.deleteMany();
+  await Category.deleteMany();
 
   const user = await User.create(users);
 

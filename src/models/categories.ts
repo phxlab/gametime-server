@@ -9,7 +9,7 @@ const Category = new Schema<CategoryDocument>(
   {
     name: {
       type: String,
-      require: [true, 'Name is required'],
+      required: [true, 'Name is required'],
     },
     store: {
       type: Schema.Types.ObjectId,

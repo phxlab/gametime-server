@@ -70,7 +70,7 @@ categories.get('/:id', protect(true), validateStore, async (c) => {
 // @desc    Update category by id
 // *route   PUT /orgs/:orgSlug/stores/:storeSlug/categories/:id
 // !method  Private
-categories.put('/:id', protect(true), validateStore, async (c) => {
+categories.put('/:id', protect(), validateStore, async (c) => {
   const categoryId = c.req.param('id');
   const { name } = await c.req.json();
 
@@ -96,7 +96,7 @@ categories.put('/:id', protect(true), validateStore, async (c) => {
 // @desc    Delete category by id
 // *route   DELETE /orgs/:orgSlug/stores/:storeSlug/categories/:id
 // !method  Private
-categories.delete('/:id', protect(true), validateStore, async (c) => {
+categories.delete('/:id', protect(), validateStore, async (c) => {
   const categoryId = c.req.param('id');
 
   // todo: Check if items in category
