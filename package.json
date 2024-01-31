@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "hono": "^3.7.6",
+    "hono": "^3.12.8",
     "hono-error-handler": "^1.0.0",
     "jose": "^4.15.4",
     "mongoose": "^7.6.8"
