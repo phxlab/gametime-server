@@ -1,8 +1,8 @@
-import { middleware } from 'hono/factory';
+import { createMiddleware } from 'hono/factory';
 import { ErrorResponse } from 'hono-error-handler';
 import { Org } from '../../models';
 
-const validateOrg = middleware<{
+const validateOrg = createMiddleware<{
   Variables: {
     org: string;
   };

@@ -1,10 +1,10 @@
-import { middleware } from 'hono/factory';
+import { createMiddleware } from 'hono/factory';
 import * as jose from 'jose';
 import { ErrorResponse } from 'hono-error-handler';
 import { User } from '../../models';
 
 const protect = (optional = false) =>
-  middleware<{
+  createMiddleware<{
     Variables: {
       user: string;
     };
