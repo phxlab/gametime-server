@@ -24,7 +24,7 @@ items.post('/', protect(), validateStore, async (c) => {
 
   const item = await Item.create({
     name,
-    slug: slug.toLowerCase(),
+    slug: slug?.toLowerCase(),
     price,
     images,
     sizes,
@@ -96,7 +96,7 @@ items.get('/:itemSlug', protect(true), validateStore, async (c) => {
 // @desc    Update item by slug
 // *route   PUT /orgs/:orgSlug/stores/:storeSlug/items/:itemSlug
 // ?method  Public
-items.put('/:itemSlug', protect(true), validateStore, async (c) => {
+items.put('/:itemSlug', protect(), validateStore, async (c) => {
   const itemSlug = c.req.param('itemSlug');
   const {
     name,
