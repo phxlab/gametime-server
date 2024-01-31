@@ -220,16 +220,57 @@ describe('Update item', () => {
 });
 
 describe('Archive item', () => {
-  test.todo('with no auth - 401');
-  test.todo('success - 200');
+  test('with no auth - 401', async () => {
+    const res = await request.delete('/ths/stores/football/items/test-item');
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('success - 200', async () => {
+    const res = await request
+      .delete('/ths/stores/football/items/test-item')
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
 });
 
 describe('Get all archived items', () => {
-  test.todo('with no auth - 200');
-  test.todo('with success - 200');
+  test('with no auth - 200', async () => {
+    const res = await request.get('/ths/stores/football/items?archived=true');
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
+
+  test('with success - 200', async () => {
+    const res = await request
+      .get('/ths/stores/football/items?archived=true')
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
 });
 
 describe('Get archived item', () => {
-  test.todo('with no auth - 404');
-  test.todo('with success - 200');
+  test('with no auth - 404', async () => {
+    const res = await request.get(
+      '/ths/stores/football/items/test-item?archived=true',
+    );
+
+    expect(res.status).toBe(404);
+    expect(res.body.success).toBeFalsy();
+  });
+
+  test('with success - 200', async () => {
+    const res = await request
+      .get('/ths/stores/football/items/test-item?archived=true')
+      .auth(global.__token, { type: 'bearer' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBeTruthy();
+  });
 });

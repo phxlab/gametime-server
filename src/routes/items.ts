@@ -142,4 +142,28 @@ items.put('/:itemSlug', protect(), validateStore, async (c) => {
   );
 });
 
+// @desc    Archive item by slug
+// *route   DELETE /orgs/:orgSlug/stores/:storeSlug/items/:itemSlug
+// !method  Private
+items.delete('/:itemSlug', protect(), validateStore, async (c) => {
+  const itemSlug = c.req.param('itemSlug');
+
+  const item = await Item.findOneAndUpdate(
+    { slug: itemSlug },
+    { archived: true },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  if (!item) {
+    throw new ErrorResponse('Item not found', 404);
+  }
+
+  return c.json({
+    success: true,
+  });
+});
+
 export default items;
